@@ -1,0 +1,13 @@
+
+.titulo{
+
+  margin-top: 150px;
+  font-size: 80px;
+  text-align: center;
+  background: linear-gradient(to right,blue,rgb(172, 0, 94));
+  -webkit-background-clip: text;
+  color: transparent;
+  font-weight: bold;
+  font-family: inherit;
+
+}
