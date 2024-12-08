@@ -1,0 +1,58 @@
+/* Estilos generales */
+.container {
+  max-width: 650px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+  background-color: #f9f9f9;
+}
+
+h1 {
+  text-align: center;
+  color: #000000;
+  font-size:40px;
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: bold;
+}
+
+p {
+  text-align: justify;
+  font-size: 17px;
+}
+
+/* Estilos del input de archivo */
+.file-upload {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 15px;
+
+}
+
+.file-upload input[type="file"] {
+  display: none;
+
+}
+
+.file-input{
+  padding: 25px;
+  border-radius: 15px;
+
+}
+
+
+/* Estilos del contenedor de resultados */
+.result-container {
+  color: black;
+}
+
+.extracted-text {
+  border: 1px solid  gray;
+  padding: 12px;
+  background-color: #fff;
+  font-family: 'Times New Roman', Times, serif;
+
+}
