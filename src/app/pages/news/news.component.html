@@ -1,1 +1,13 @@
-<p>news works!</p>
+<main>
+    <h1>Últimas Noticias</h1>
+    <div *ngIf="data.length > 0; else noData">
+        <div *ngFor="let noticia of data">
+            <p>Título: {{ noticia.title }}</p>
+            <p>Descripción: {{ noticia.description }}</p>
+            <a href="{{ noticia.link }}" target="_blank">Leer más</a>
+        </div>
+    </div>
+    <ng-template #noData>
+        <p>No se encontraron noticias para mostrar.</p>
+    </ng-template>
+</main>
