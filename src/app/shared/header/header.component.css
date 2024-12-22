@@ -13,3 +13,19 @@
   background: #0056b3;
 
 }
+
+.register {
+  background: #9c3cac; /* Color verde para diferenciarlo */
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  transition: 0.3s;
+  text-decoration: none; /* Sin subrayado */
+  font-weight: bold; /* Texto en negrita */
+}
+
+.register:hover {
+  background: #8d158f; /* Verde más oscuro al pasar el mouse */
+  transition: 0.3s;
+}
+
