@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, inject, OnInit } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 /* type News = {
   title: string;
@@ -26,7 +27,9 @@ export class NewsComponent implements OnInit {
   };
 
   fetchData() {
-    this.httpClient.get("http://localhost:5000/api/v1/news")
+    const API_URL = environment.apiUrl
+    console.log({API_URL})
+    this.httpClient.get(`${API_URL}/news` ||"http://localhost:5000/api/v1/news")
       .subscribe({
         next: (response: any) => {
           if (Array.isArray(response.data)) {
@@ -36,7 +39,7 @@ export class NewsComponent implements OnInit {
             console.error("Respuesta no válida:", response);
           }
         },
-        error: (err) => {
+        error: (err: any) => {
           this.error = "Hubo un error al obtener las noticias.";
           console.error("Error en la solicitud:", err);
         },
