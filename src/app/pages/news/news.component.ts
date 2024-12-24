@@ -26,11 +26,11 @@ export class NewsComponent implements OnInit {
   };
 
   fetchData() {
-    this.httpClient.get("http://localhost:3000/scrapeNews")
+    this.httpClient.get("http://localhost:5000/api/v1/news")
       .subscribe({
         next: (response: any) => {
-          if (Array.isArray(response)) {
-            this.data = response; // Asignamos si es un array válido.
+          if (Array.isArray(response.data)) {
+            this.data = response.data; // Asignamos si es un array válido.
           } else {
             this.error = "El servidor no retornó un array válido.";
             console.error("Respuesta no válida:", response);

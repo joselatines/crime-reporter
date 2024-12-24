@@ -1,13 +1,18 @@
-<main>
-    <h1>Últimas Noticias</h1>
-    <div *ngIf="data.length > 0; else noData">
-        <div *ngFor="let noticia of data">
-            <p>Título: {{ noticia.title }}</p>
-            <p>Descripción: {{ noticia.description }}</p>
-            <a href="{{ noticia.link }}" target="_blank">Leer más</a>
+<main class="p-4">
+    <h1 class="text-2xl font-bold mb-4">Últimas Noticias</h1>
+    <div class="flex flex-wrap justify-around" *ngIf="data.length > 0; else noData">
+        <div class="max-w-sm rounded overflow-hidden shadow-lg m-4" *ngFor="let noticia of data">
+            <img class="w-full h-64 object-cover" [src]="noticia.imgUrl" alt="{{ noticia.title }}">
+            <div class="px-6 py-4">
+                <div class="font-bold text-xl mb-2">{{ noticia.title }}</div>
+                <p class="text-gray-700 text-base">{{ noticia.description }}</p>
+            </div>
+            <div class="px-6 pt-4 pb-2">
+                <a href="{{ noticia.link }}" target="_blank" class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Leer más</a>
+            </div>
         </div>
     </div>
     <ng-template #noData>
-        <p>No se encontraron noticias para mostrar.</p>
+        <p class="text-center text-gray-500 text-2xl">No se encontraron noticias para mostrar.</p>
     </ng-template>
 </main>
