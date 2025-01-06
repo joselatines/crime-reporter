@@ -1,0 +1,19 @@
+<form (ngSubmit)="onSubmit()">
+    <div>
+      <label for="name" class="text-gray-700">Nombre</label>
+      <input id="name" type="text" formControlName="name" placeholder="Tu nombre" class="w-full p-3 border rounded-md focus:border-blue-500" />
+    </div>
+  
+    <div>
+      <label for="email" class="text-gray-700">Email</label>
+      <input id="email" type="email" formControlName="email" placeholder="Tu correo" class="w-full p-3 border rounded-md focus:border-blue-500" />
+    </div>
+  
+    <div>
+      <label for="password" class="text-gray-700">Contraseña</label>
+      <input id="password" type="password" formControlName="password" placeholder="Tu contraseña" class="w-full p-3 border rounded-md focus:border-blue-500" />
+    </div>
+  
+    <button type="submit" class="w-full p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600">Registrar</button>
+  </form>
+  
