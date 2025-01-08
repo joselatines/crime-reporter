@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { LoginService } from '../../../services/auth/login.service';
 
 @Component({
   selector: 'app-register',
@@ -13,7 +14,7 @@ import { FormsModule } from '@angular/forms';
 export class RegisterComponent {
   registerForm: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private loginServices: LoginService) {
     this.registerForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -24,8 +25,10 @@ export class RegisterComponent {
   onSubmit() {
     if (this.registerForm.valid) {
       console.log('Formulario válido', this.registerForm.value);
+      this.loginServices.login(this.registerForm.value);
     } else {
       console.log('Formulario no válido');
+      this.loginServices.login(this.registerForm.value);
     }
   }
 }

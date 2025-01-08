@@ -1,6 +1,16 @@
 <div class="flex justify-center">
-    <iframe src="https://www.google.com/maps/d/embed?mid=1ltm8MHbk1D0GTqjt5SccW_HOlqZ5SZQ&ehbc=2E312F" 
-        width="1024"
+    <span class="flex justify-center items-center m-auto" *ngIf="isLoading">
+        Cargando mapa...
+        <app-spinner-svg />
+    </span>
+    <span *ngIf="hasError">
+        Error al cargar el contenido.
+    </span>
+    <iframe 
+    src="https://www.google.com/maps/d/embed?mid=1ltm8MHbk1D0GTqjt5SccW_HOlqZ5SZQ&ehbc=2E312F"
+        (load)="onIframeMapLoad()" 
+        (error)="onIframeMapError()"
+        width="1024" 
         height="768">
     </iframe>
 </div>
