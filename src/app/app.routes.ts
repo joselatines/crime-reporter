@@ -7,6 +7,7 @@ import { MapComponent } from './pages/map/map.component';
 import { OcrComponent } from './pages/ocr/ocr.component';
 
 export const routes: Routes = [
+    { path: "", redirectTo: "/login", pathMatch: "full" },
     { path: "login", component: LoginComponent },
     { path: "dashboard", component: DashboardComponent },
     { path: "news", component: NewsComponent },
