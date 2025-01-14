@@ -1,0 +1,71 @@
+<div class="container">
+    <div class="form-wrapper">
+      <h2 class="form-title">Register</h2>
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
+        <div>
+          <label for="username" class="text-sm font-medium text-gray-700">Username</label>
+          <input
+            id="username"
+            type="text"
+            formControlName="username"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          />
+          <div *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched" class="text-sm text-red-600 mt-1">
+            Username is required (min 3 characters).
+          </div>
+        </div>
+  
+        <div>
+          <label for="email" class="text-sm font-medium text-gray-700">Email</label>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          />
+          <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="text-sm text-red-600 mt-1">
+            A valid email is required.
+          </div>
+        </div>
+  
+        <div>
+          <label for="password" class="text-sm font-medium text-gray-700">Password</label>
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          />
+          <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="text-sm text-red-600 mt-1">
+            Password is required (min 6 characters).
+          </div>
+        </div>
+  
+        <div>
+          <label for="role" class="text-sm font-medium text-gray-700">Role</label>
+          <select
+            id="role"
+            formControlName="role"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          >
+            <option value="" disabled>Select a role</option>
+            <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+          </select>
+          <div *ngIf="registerForm.get('role')?.invalid && registerForm.get('role')?.touched" class="text-sm text-red-600 mt-1">
+            Please select a role.
+          </div>
+        </div>
+  
+        <button
+          type="submit"
+          [disabled]="registerForm.invalid"
+          class="w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          Register
+        </button>
+      </form>
+    </div>
+  </div>
+  
+  
+  
