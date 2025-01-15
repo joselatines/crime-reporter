@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { LoginData, RegisterData } from '../../../lib/types/auth';
+import { catchError, Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -17,10 +18,13 @@ export class AuthService {
     })
   }
 
-  login(credentials: LoginData) {
-    return this.http.post(`${this.API_URL}/login`, credentials).subscribe(res => {
-      console.log(res)
-    });
+  login(credentials: LoginData): Observable<any> {
+    return this.http.post(`${this.API_URL}/login`, credentials).pipe(
+      catchError((error) => {
+        console.error('Error in login service:', error);
+        return throwError(() => new Error(error.error?.message || 'Login failed'));
+      })
+    );
   }
 
   logout() {

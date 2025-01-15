@@ -25,9 +25,20 @@ export class LoginComponent {
     this.loginError = null; // Resetea el error antes de intentar iniciar sesión
 
     if (this.loginForm.valid) {
-      this.authService.login(this.loginForm.value);
+      const credentials = this.loginForm.value; // Obtén los valores del formulario
+
+      this.authService.login(credentials).subscribe({
+        next: (response) => {
+          console.log('Login successful:', response);
+          // Aquí puedes redirigir al usuario o guardar el token en localStorage
+        },
+        error: (err) => {
+          this.loginError = err.error?.message || 'Error desconocido'; // Captura el error y lo muestra
+          console.error('Login failed:', err);
+        },
+      });
     } else {
-      console.log('Form is invalid');
+      console.log('Formulario inválido');
     }
   }
 }
