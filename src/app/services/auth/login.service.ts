@@ -10,6 +10,7 @@ export class AuthService {
   constructor() {}
 
   login(credentials: { email: string; password: string }): Observable<any> {
+    console.log(credentials)
     const { email, password } = credentials;
 
     if (email === this.validCredentials.email && password === this.validCredentials.password) {

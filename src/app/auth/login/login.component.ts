@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { AuthService } from '../../services/auth/login.service';
+import { AuthService } from '../../services/auth/auth.service';
+
 
 @Component({
   selector: 'app-login',
@@ -24,6 +25,16 @@ export class LoginComponent {
     this.loginError = null; // Resetea el error antes de intentar iniciar sesión
 
     if (this.loginForm.valid) {
+      this.authService.login(this.loginForm.value);
+    } else {
+      console.log('Form is invalid');
+    }
+  }
+}
+/*   onSubmit(): void {
+    this.loginError = null; // Resetea el error antes de intentar iniciar sesión
+
+    if (this.loginForm.valid) {
       const credentials = this.loginForm.value;
 
       this.authService.login(credentials).subscribe({
@@ -40,5 +51,5 @@ export class LoginComponent {
       console.log('Form is invalid');
     }
   }
-}
+} */
 

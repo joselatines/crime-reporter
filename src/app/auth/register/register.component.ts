@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -14,7 +15,7 @@ export class RegisterComponent {
 
   roles = ['Admin', 'Detective']; // Actualización de los roles disponibles
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private authServices: AuthService) {
     this.registerForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
@@ -25,6 +26,7 @@ export class RegisterComponent {
 
   onSubmit() {
     if (this.registerForm.valid) {
+      this.authServices.register(this.registerForm.value);
       console.log('Register Data:', this.registerForm.value);
       // Aquí puedes llamar a un servicio para enviar los datos al backend
     } else {
