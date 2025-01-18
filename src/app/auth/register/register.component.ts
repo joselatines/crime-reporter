@@ -13,7 +13,7 @@ import { AuthService } from '../../services/auth/auth.service';
 export class RegisterComponent {
   registerForm: FormGroup;
 
-  roles = ['Admin', 'Detective']; // Actualización de los roles disponibles
+  roles = ['admin', 'detective']; // Actualización de los roles disponibles
 
   constructor(private fb: FormBuilder, private authServices: AuthService) {
     this.registerForm = this.fb.group({
@@ -26,8 +26,8 @@ export class RegisterComponent {
 
   onSubmit() {
     if (this.registerForm.valid) {
-      this.authServices.register(this.registerForm.value);
       console.log('Register Data:', this.registerForm.value);
+      this.authServices.register(this.registerForm.value);
       // Aquí puedes llamar a un servicio para enviar los datos al backend
     } else {
       console.log('Form is invalid');

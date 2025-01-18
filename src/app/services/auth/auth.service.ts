@@ -8,18 +8,17 @@ import { catchError, Observable, tap, throwError } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  private API_URL = `${environment.apiUrl}`
+  private API_URL = 'https://crime-reporter-api.onrender.com/api/v1/auth';
+/*   private API_URL = `${environment.apiUrl}` */
 
   constructor(private http: HttpClient) {
     console.log('API_URL:', this.API_URL);
   }
 
-  /*   register(data: RegisterData) {
-      return this.http.post(`${this.API_URL}/register`, data).subscribe(res => {
-        console.log(res)
-      })
-    } */
-
+    register(data: RegisterData): Observable<any> {
+      return this.http.post(`${this.API_URL}/register`, data)
+    }
+/* 
   register(data: RegisterData) {
     this.http.post(`${this.API_URL}/auth/register`, data).subscribe({
       
@@ -30,7 +29,7 @@ export class AuthService {
         console.error('Error en el registro:', err);
       }
     });
-  }
+  } */
 
   /*   login(credentials: LoginData): Observable<any> {
       return this.http.post(`${this.API_URL}/login`, credentials).pipe(
