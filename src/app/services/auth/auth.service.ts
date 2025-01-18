@@ -8,7 +8,7 @@ import { catchError, Observable, tap, throwError } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  private API_URL = `${environment.apiUrl}/auth`
+  private API_URL = `${environment.apiUrl}`
 
   constructor(private http: HttpClient) {
     console.log('API_URL:', this.API_URL);
@@ -21,7 +21,8 @@ export class AuthService {
     } */
 
   register(data: RegisterData) {
-    this.http.post(`${this.API_URL}/register`, data).subscribe({
+    this.http.post(`${this.API_URL}/auth/register`, data).subscribe({
+      
       next: (res) => {
         console.log('Registro exitoso:', res);
       },
@@ -41,7 +42,7 @@ export class AuthService {
     } */
 
   login(credentials: LoginData): Observable<any> {
-    return this.http.post(`${this.API_URL}/login`, credentials).pipe(
+    return this.http.post(`${this.API_URL}/auth/login`, credentials).pipe(
       tap((res) => {
         console.log('Inicio de sesión exitoso:', res); // Respuesta del backend
       }),
