@@ -3,16 +3,17 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { LoginData, RegisterData } from '../../../lib/types/auth';
 import { catchError, Observable, tap, throwError } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   /*   private API_URL = `https://crime-reporter-api.onrender.com/api/v1/auth`  */
-  private API_URL = `${environment.apiUrl}/auth`
+  private API_URL = `${environment.apiUrl}/auth`;
   TOKEN_KEY = 'token';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   saveToken(token: string): void {
     localStorage.setItem(this.TOKEN_KEY, token);
@@ -58,6 +59,7 @@ export class AuthService {
     }).subscribe(
       (response: any) => {
         this.saveToken(response.token);
+        this.router.navigateByUrl('/dashboard');
         /*         localStorage.setItem('token', response.token);
                 console.log('JWT recibido:', response.token); */
 
@@ -87,7 +89,8 @@ export class AuthService {
 
 
   logout() {
-    return this.http.post(`${this.API_URL}/logout`, {});
+    localStorage.removeItem(this.TOKEN_KEY);
+    this.router.navigateByUrl('/login');
   }
 
 

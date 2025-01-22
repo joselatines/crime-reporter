@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -15,7 +16,7 @@ export class RegisterComponent {
 
   roles = ['admin', 'detective']; // Actualización de los roles disponibles
 
-  constructor(private fb: FormBuilder, private authServices: AuthService) {
+  constructor(private fb: FormBuilder, private authServices: AuthService, private router: Router) {
     this.registerForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
@@ -40,6 +41,7 @@ export class RegisterComponent {
       this.authServices.register(this.registerForm.value).subscribe({
         next: (response) => {
           console.log('Login successful:', response);
+          this.router.navigateByUrl('/login');
           // Aquí puedes redirigir al usuario o guardar el token en localStorage
         },
         error: (err) => {
