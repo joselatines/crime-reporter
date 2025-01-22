@@ -30,6 +30,8 @@ export class LoginComponent {
       this.authService.login(credentials).subscribe({
         next: (response) => {
           console.log('Login successful:', response);
+          console.log('JWT recibido:', response.token); // Verifica el token recibido
+          this.authService.saveToken(response.token);
           // Aquí puedes redirigir al usuario o guardar el token en localStorage
         },
         error: (err) => {

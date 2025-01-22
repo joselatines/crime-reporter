@@ -24,10 +24,30 @@ export class RegisterComponent {
     });
   }
 
+/*   (nexts) => {
+    console.log('Usuario registrado exitosamente:', nexts);
+    // Mostrar mensaje de éxito
+    alert('¡Usuario registrado con éxito!');
+  },
+  (error) => {
+    console.error('Error al registrar usuario:', error);
+    // Mostrar mensaje de error
+    alert('Ocurrió un error al registrar el usuario.')
+ */
   onSubmit() {
     if (this.registerForm.valid) {
       console.log('Register Data:', this.registerForm.value);
-      this.authServices.register(this.registerForm.value);
+      this.authServices.register(this.registerForm.value).subscribe({
+        next: (response) => {
+          console.log('Login successful:', response);
+          // Aquí puedes redirigir al usuario o guardar el token en localStorage
+        },
+        error: (err) => {
+          console.error('Error al registrar usuario:', err);
+          // Mostrar mensaje de error
+          alert('Ocurrió un error al registrar el usuario.')
+        },
+      });
       // Aquí puedes llamar a un servicio para enviar los datos al backend
     } else {
       console.log('Form is invalid');
