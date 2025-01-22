@@ -49,11 +49,10 @@ export class AuthService {
 
 
   login(credentials: LoginData) {
-    const headers = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' })
-    };
 
-    this.http.post(`${this.API_URL}/login`, credentials, headers).subscribe(
+    this.http.post(`${this.API_URL}/login`, credentials, {
+      withCredentials: true, // Para enviar cookies
+    }).subscribe(
       (res: any) => {
         localStorage.setItem('token', res.token);
         console.log('JWT recibido:', res.token);
