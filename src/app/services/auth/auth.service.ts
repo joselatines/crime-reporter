@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { LoginData, RegisterData } from '../../../lib/types/auth';
@@ -8,9 +8,9 @@ import { catchError, Observable, tap, throwError } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-/*   private API_URL = `https://crime-reporter-api.onrender.com/api/v1/auth`  */
+  /*   private API_URL = `https://crime-reporter-api.onrender.com/api/v1/auth`  */
   TOKEN_KEY = 'token';
-  private API_URL = `${environment.apiUrl}/auth` 
+  private API_URL = `${environment.apiUrl}/auth`
 
   constructor(private http: HttpClient) { }
 
@@ -48,9 +48,26 @@ export class AuthService {
     } */
 
 
-  login(credentials: LoginData): Observable<any> {
-    debugger;
-    return this.http.post(`${this.API_URL}/login`, credentials)
+  login(credentials: LoginData) {
+    const headers = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' })
+    };
+
+    this.http.post(`${this.API_URL}/login`, credentials, headers).subscribe(
+      (res: any) => {
+        localStorage.setItem('token', res.token);
+        console.log('JWT recibido:', res.token);
+
+      })
+
+    /* next: (response) => {
+      localStorage.setItem(this.TOKEN_KEY, response.token);
+      console.log('JWT recibido:', response.token); // Verifica el token recibido
+    },
+    error: (err) => {
+      console.error('Error en el registro:', err);
+    }
+  }); */
   }
 
   /*   login(credentials: LoginData): Observable<any> {

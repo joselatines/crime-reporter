@@ -27,7 +27,7 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       const credentials = this.loginForm.value; // Obtén los valores del formulario
 
-      this.authService.login(credentials).subscribe({
+      this.authService.login(credentials)/* .subscribe({
         next: (response) => {
           console.log('Login successful:', response);
           console.log('JWT recibido:', response.token); // Verifica el token recibido
@@ -38,7 +38,7 @@ export class LoginComponent {
           this.loginError = err.error?.message || 'Error desconocido'; // Captura el error y lo muestra
           console.error('Login failed:', err);
         },
-      });
+      }); */
     } else {
       console.log('Formulario inválido');
     }
