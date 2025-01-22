@@ -53,7 +53,6 @@ export class AuthService {
 
 
   login(credentials: LoginData) {
-
     this.http.post(`${this.API_URL}/login`, credentials, {
       withCredentials: true, // Para enviar cookies
     }).subscribe(
