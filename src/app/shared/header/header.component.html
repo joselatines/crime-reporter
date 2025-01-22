@@ -2,11 +2,13 @@
     <a routerLink="/dashboard">Crime Reporter</a>
 
     <div class="flex gap-7">
-        <a routerLink="/ocr">OCR</a>
-        <a routerLink="/news">Noticias</a>
-        <a routerLink="/notes">Notas</a>
-        <a routerLink="/map">Mapa</a>
+        @if(authService.isAuthenticated()){            
+            <a routerLink="/ocr">OCR</a>
+            <a routerLink="/news">Noticias</a>
+            <a routerLink="/notes">Notas</a>
+            <a routerLink="/map">Mapa</a>
+            <a class="register" routerLink="/register">Register</a>
+        }
         <a class="login" routerLink="/login">Iniciar sesion</a>
-        <a class="register" routerLink="/register">Register</a>
     </div>
 </header>

@@ -9,17 +9,21 @@ import { catchError, Observable, tap, throwError } from 'rxjs';
 })
 export class AuthService {
   /*   private API_URL = `https://crime-reporter-api.onrender.com/api/v1/auth`  */
-  TOKEN_KEY = 'token';
   private API_URL = `${environment.apiUrl}/auth`
+  TOKEN_KEY = 'token';
 
   constructor(private http: HttpClient) { }
 
   saveToken(token: string): void {
-    localStorage.setItem("token", token);
+    localStorage.setItem(this.TOKEN_KEY, token);
   }
 
   getToken(): string | null {
-    return localStorage.getItem("token");
+    return localStorage.getItem(this.TOKEN_KEY);
+  }
+
+  isAuthenticated() {
+    return !!localStorage.getItem(this.TOKEN_KEY);
   }
 
   register(data: RegisterData): Observable<any> {
@@ -53,9 +57,10 @@ export class AuthService {
     this.http.post(`${this.API_URL}/login`, credentials, {
       withCredentials: true, // Para enviar cookies
     }).subscribe(
-      (res: any) => {
-        localStorage.setItem('token', res.token);
-        console.log('JWT recibido:', res.token);
+      (response: any) => {
+        this.saveToken(response.token);
+        /*         localStorage.setItem('token', response.token);
+                console.log('JWT recibido:', response.token); */
 
       })
 

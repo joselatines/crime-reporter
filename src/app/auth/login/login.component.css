@@ -5,8 +5,8 @@
   align-items: center;
   min-height: 100vh;
   background-color: #f8fafc; /* Color de fondo claro */
-  padding: 1rem;
   box-sizing: border-box;
+  margin: 0 auto;
 }
 
 /* Contenedor del formulario */
