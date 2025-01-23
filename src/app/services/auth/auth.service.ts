@@ -28,7 +28,11 @@ export class AuthService {
   }
 
   register(data: RegisterData): Observable<any> {
-    return this.http.post(`${this.API_URL}/register`, data)
+    return this.http.post(`${this.API_URL}/register`, data).pipe(
+      catchError((error) => {
+        return throwError(() => error.error?.message || "Error desconocido");
+      })
+    )
   }
 
   /*   register(data: RegisterData) {
