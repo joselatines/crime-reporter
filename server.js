@@ -65,7 +65,8 @@ puppeteer.launch().then(async function (browser) {
     await browser.close();
 }); */
 
-app.get("/scrapeNews", async (req, res) => {
+/* app.get("/scrapeNews", async (req, res) => { */
+app.get("/news", async (req, res) => {
 
      console.log("probando")
     puppeteer.launch({ headless: true,}).then(async function (browser) {
