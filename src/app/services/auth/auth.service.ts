@@ -9,8 +9,8 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthService {
-  /*   private API_URL = `https://crime-reporter-api.onrender.com/api/v1/auth`  */
-  private API_URL = `${environment.apiUrl}/auth`;
+  private API_URL = `https://crime-reporter-api.onrender.com/api/v1/auth`
+  /*   private API_URL = `${environment.apiUrl}/auth`; */
   TOKEN_KEY = 'token';
 
   constructor(private http: HttpClient, private router: Router) { }
