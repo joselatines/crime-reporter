@@ -7,10 +7,9 @@ import { MapComponent } from './pages/map/map.component';
 import { OcrComponent } from './pages/ocr/ocr.component';
 import { RegisterComponent } from './auth/register/register.component'; 
 import { authGuard } from './guard/auth.guard';
-/* 
-Funciona
+
 export const routes: Routes = [
-    { path: "", redirectTo: "/login", pathMatch: "full" },
+    { path: "", redirectTo: "/dashboard", pathMatch: "full" },
     { path: "login", component: LoginComponent },
     { path: "register", component: RegisterComponent }, 
     { path: "dashboard", component: DashboardComponent, canActivate: [authGuard] },
@@ -18,9 +17,9 @@ export const routes: Routes = [
     { path: "notes", component: NotesComponent, canActivate: [authGuard] },
     { path: "map", component: MapComponent, canActivate: [authGuard] },
     { path: "ocr", component: OcrComponent, canActivate: [authGuard] },
-]; */
+];
 
-export const routes: Routes = [
+/* export const routes: Routes = [
     { path: "", redirectTo: "/login", pathMatch: "full" },
     { path: "login", component: LoginComponent },
     { path: "register", component: RegisterComponent }, 
@@ -29,4 +28,4 @@ export const routes: Routes = [
     { path: "notes", component: NotesComponent},
     { path: "map", component: MapComponent},
     { path: "ocr", component: OcrComponent},
-];
+]; */

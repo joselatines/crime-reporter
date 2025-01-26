@@ -35,35 +35,13 @@ export class AuthService {
     );
   }
 
-  /*   register(data: RegisterData) {
-      this.http.post(`${this.API_URL}/register`, data).subscribe({
-        
-        next: (res) => {
-          console.log('Registro exitoso:', res);
-        },
-        error: (err) => {
-          console.error('Error en el registro:', err);
-        }
-      });
-    } */
-
-  /*   login(credentials: LoginData): Observable<any> {
-      return this.http.post(`${this.API_URL}/login`, credentials).pipe(
-        catchError((error) => {
-          console.error('Error in login service:', error);
-          return throwError(() => new Error(error.error?.message || 'Login failed'));
-        })
-      );
-    } */
-
-
   login(credentials: LoginData): Observable<any> {
     return this.http.post(`${this.API_URL}/login`, credentials, {
       withCredentials: true, // Para enviar cookies
     }).pipe(
       tap((response: any) => {
         this.saveToken(response.token); // Guarda el token recibido
-        console.log('JWT recibido:', response.token); // Imprime el JWT recibido
+        this.router.navigateByUrl('/dashboard');
       }),
       catchError((error) => {
         console.error('Error en el login:', error); // Muestra el error
@@ -71,19 +49,6 @@ export class AuthService {
       })
     );
   }
-
-  /*   login(credentials: LoginData): Observable<any> {
-      return this.http.post(`${this.API_URL}/login`, credentials).pipe(
-        tap((res) => {
-          console.log('Inicio de sesión exitoso:', res); // Respuesta del backend
-        }),
-        catchError((error) => {
-          console.error('Error en el login:', error); // Error del backend
-          return throwError(() => new Error(error.error?.message || 'Login failed'));
-        })
-      );
-    } */
-
 
   logout() {
     localStorage.removeItem(this.TOKEN_KEY);
