@@ -1,31 +1,33 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { MatDialogModule } from '@angular/material/dialog';
 import { PopupComponent } from './shared/popup/popup.component';
+import { ConfiguracionesComponent } from './configuraciones/configuraciones.component';
 
-// Importa los componentes standalone directamente
 import { HeaderComponent } from './shared/header/header.component';
+import { AppComponent } from './app.component';
 
 const routes: Routes = [
   { path: 'auth/login', loadComponent: () => import('./auth/login/login.component').then(m => m.LoginComponent) },
-  { path: '', redirectTo: 'auth/login', pathMatch: 'full' }
+  { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
+  { path: 'configuraciones', component: ConfiguracionesComponent }
 ];
 
 @NgModule({
-  declarations: [
-    // No es necesario declarar aquí si es standalone
-  ],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
     RouterModule.forRoot(routes),
-    HeaderComponent, // Importa el componente standalone directamente
+    HeaderComponent,
     MatDialogModule,
     PopupComponent,
+    FormsModule,
+    AppComponent
   ],
   providers: [],
-  bootstrap: [], // Elimina AppComponent de aquí si es standalone
+  bootstrap: []
 })
-export class AppModule {}
+export class AppModule { }

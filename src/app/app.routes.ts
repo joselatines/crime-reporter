@@ -5,28 +5,31 @@ import { NewsComponent } from './pages/news/news.component';
 import { NotesComponent } from './pages/notes/notes.component';
 import { MapComponent } from './pages/map/map.component';
 import { OcrComponent } from './pages/ocr/ocr.component';
-import { RegisterComponent } from './auth/register/register.component'; 
+import { RegisterComponent } from './auth/register/register.component';
 import { authGuard } from './guard/auth.guard';
-/* 
+import { ConfiguracionesComponent } from './configuraciones/configuraciones.component';
+/*
 Funciona
 export const routes: Routes = [
     { path: "", redirectTo: "/login", pathMatch: "full" },
     { path: "login", component: LoginComponent },
-    { path: "register", component: RegisterComponent }, 
+    { path: "register", component: RegisterComponent },
     { path: "dashboard", component: DashboardComponent, canActivate: [authGuard] },
     { path: "news", component: NewsComponent, canActivate: [authGuard] },
     { path: "notes", component: NotesComponent, canActivate: [authGuard] },
     { path: "map", component: MapComponent, canActivate: [authGuard] },
     { path: "ocr", component: OcrComponent, canActivate: [authGuard] },
+    { path: 'configuraciones', component: ConfiguracionesComponent,, canActivate: [authGuard] },
 ]; */
 
 export const routes: Routes = [
     { path: "", redirectTo: "/login", pathMatch: "full" },
     { path: "login", component: LoginComponent },
-    { path: "register", component: RegisterComponent }, 
+    { path: "register", component: RegisterComponent },
     { path: "dashboard", component: DashboardComponent},
     { path: "news", component: NewsComponent},
     { path: "notes", component: NotesComponent},
     { path: "map", component: MapComponent},
     { path: "ocr", component: OcrComponent},
+    { path: 'configuraciones', component: ConfiguracionesComponent}
 ];
