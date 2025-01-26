@@ -32,7 +32,7 @@ export class AuthService {
       catchError((error) => {
         return throwError(() => error.error?.message || "Error desconocido");
       })
-    )
+    );
   }
 
   /*   register(data: RegisterData) {
@@ -57,26 +57,19 @@ export class AuthService {
     } */
 
 
-  login(credentials: LoginData) {
-    this.http.post(`${this.API_URL}/login`, credentials, {
+  login(credentials: LoginData): Observable<any> {
+    return this.http.post(`${this.API_URL}/login`, credentials, {
       withCredentials: true, // Para enviar cookies
-    }).subscribe(
-      (response: any) => {
-        this.saveToken(response.token);
-        this.router.navigateByUrl('/dashboard');
-        /*         localStorage.setItem('token', response.token);
-                console.log('JWT recibido:', response.token); */
-
+    }).pipe(
+      tap((response: any) => {
+        this.saveToken(response.token); // Guarda el token recibido
+        console.log('JWT recibido:', response.token); // Imprime el JWT recibido
+      }),
+      catchError((error) => {
+        console.error('Error en el login:', error); // Muestra el error
+        return throwError(() => new Error(error.error?.message || 'Login failed'));
       })
-
-    /* next: (response) => {
-      localStorage.setItem(this.TOKEN_KEY, response.token);
-      console.log('JWT recibido:', response.token); // Verifica el token recibido
-    },
-    error: (err) => {
-      console.error('Error en el registro:', err);
-    }
-  }); */
+    );
   }
 
   /*   login(credentials: LoginData): Observable<any> {
@@ -96,6 +89,4 @@ export class AuthService {
     localStorage.removeItem(this.TOKEN_KEY);
     this.router.navigateByUrl('/login');
   }
-
-
 }
