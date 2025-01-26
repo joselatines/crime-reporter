@@ -25,8 +25,8 @@ export class NewsComponent implements OnInit {
 
   fetchData() {
     this.isLoading = true;
-/*     const API_URL = environment.apiUrl */
-    const API_URL = "http://localhost:3000"
+    const API_URL = environment.apiUrl
+/*     const API_URL = "http://localhost:3000" */
     console.log({API_URL})
     this.httpClient.get(`${API_URL}/news`)
       .subscribe({

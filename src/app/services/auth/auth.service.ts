@@ -9,8 +9,8 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthService {
-  /*   private API_URL = `https://crime-reporter-api.onrender.com/api/v1/auth`  */
-  private API_URL = `${environment.apiUrl}/auth`;
+  private API_URL = `https://crime-reporter-api.onrender.com/api/v1/auth`
+  /*   private API_URL = `${environment.apiUrl}/auth`; */
   TOKEN_KEY = 'token';
 
   constructor(private http: HttpClient, private router: Router) { }
@@ -58,14 +58,13 @@ export class AuthService {
 
 
   login(credentials: LoginData) {
-    this.http.post(`${this.API_URL}/login`, credentials, {
+    this.http.post(`${this.API_URL}/login`, credentials/* , {
       withCredentials: true, // Para enviar cookies
-    }).subscribe(
+    } */).subscribe(
       (response: any) => {
         this.saveToken(response.token);
         this.router.navigateByUrl('/dashboard');
-        /*         localStorage.setItem('token', response.token);
-                console.log('JWT recibido:', response.token); */
+        console.log('JWT recibido:', response.token);
 
       })
 
