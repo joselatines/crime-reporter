@@ -1,59 +1,85 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { PopupComponent } from '../../shared/popup/popup.component';
 import { AuthService } from '../../services/auth/auth.service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, PopupComponent],
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent {
   registerForm: FormGroup;
+  roles = ['Detective', 'Admin']; // Roles disponibles
+  isLoading = false; // Estado de carga
+  showPopup = false; // Control de visibilidad del pop-up
+  popupMessage = ''; // Mensaje del pop-up
 
-  roles = ['admin', 'detective']; // Actualización de los roles disponibles
-
-  constructor(private fb: FormBuilder, private authServices: AuthService, private router: Router) {
+  constructor(private fb: FormBuilder, private authService: AuthService) {
     this.registerForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      role: ['', [Validators.required]],
-    });
+      confirmPassword: ['', [Validators.required]], // Campo de confirmación de contraseña
+      role: ['', Validators.required],
+    }, { validator: this.passwordMatchValidator }); // Validador personalizado
   }
 
-/*   (nexts) => {
-    console.log('Usuario registrado exitosamente:', nexts);
-    // Mostrar mensaje de éxito
-    alert('¡Usuario registrado con éxito!');
-  },
-  (error) => {
-    console.error('Error al registrar usuario:', error);
-    // Mostrar mensaje de error
-    alert('Ocurrió un error al registrar el usuario.')
- */
-  onSubmit() {
+  // Validador personalizado para confirmar contraseña
+  passwordMatchValidator(form: FormGroup) {
+    return form.get('password')?.value === form.get('confirmPassword')?.value
+      ? null
+      : { mismatch: true };
+  }
+
+  onSubmit(): void {
     if (this.registerForm.valid) {
-      console.log('Register Data:', this.registerForm.value);
-      this.authServices.register(this.registerForm.value).subscribe({
+      this.isLoading = true; // Activa el estado de carga
+      const formData = this.registerForm.value;
+
+      this.authService.register(formData).subscribe({
         next: (response) => {
-          console.log('Login successful:', response);
-          this.router.navigateByUrl('/login');
-          // Aquí puedes redirigir al usuario o guardar el token en localStorage
+          this.handleRegistrationSuccess(response);
         },
         error: (err) => {
-          console.error('Error al registrar usuario:', err);
-          // Mostrar mensaje de error
-          alert('Ocurrió un error al registrar el usuario.')
+          this.handleRegistrationError(err);
         },
       });
-      // Aquí puedes llamar a un servicio para enviar los datos al backend
     } else {
-      console.log('Form is invalid');
+      this.showFormError();
     }
   }
-}
 
+  // Manejo de registro exitoso
+  private handleRegistrationSuccess(response: any): void {
+    this.isLoading = false; // Desactiva el estado de carga
+    this.popupMessage = response.message || 'User registered successfully!'; // Mensaje de éxito
+    this.showPopup = true; // Muestra el pop-up
+    setTimeout(() => this.closePopup(), 3000); // Cierra el pop-up después de 3 segundos
+    this.registerForm.reset(); // Limpia el formulario
+  }
+
+  // Manejo de errores de registro
+  private handleRegistrationError(err: any): void {
+    this.isLoading = false;
+    this.popupMessage = err.error?.message || 'Register failed'; // Mensaje de error específico
+    this.showPopup = true; // Muestra el pop-up
+    setTimeout(() => this.closePopup(), 3000); // Cierra el pop-up después de 3 segundos
+    console.error('Error during registration:', err); // Log del error
+  }
+
+  // Mostrar error si el formulario no es válido
+  private showFormError(): void {
+    this.popupMessage = 'Please fill out the form correctly.'; // Mensaje de error
+    this.showPopup = true; // Muestra el pop-up
+    setTimeout(() => this.closePopup(), 3000); // Cierra el pop-up después de 3 segundos
+  }
+
+  // Método para cerrar el pop-up
+  closePopup(): void {
+    this.showPopup = false;
+  }
+}
