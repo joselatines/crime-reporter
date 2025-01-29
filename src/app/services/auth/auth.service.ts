@@ -80,9 +80,9 @@ export class AuthService {
   }
 
   login(credentials: LoginData): Observable<any> {
-    return this.http.post(`${this.API_URL}/auth/login`, credentials/* , {
+    return this.http.post(`${this.API_URL}/auth/login`, credentials, {
       withCredentials: true, // Para enviar cookies (Deshabilitado para probar en local)
-    } */).pipe(
+    }).pipe(
       tap((response: any) => {
         this.saveToken(response.token); // Guarda el token recibido
         this.userRole.next(response.role);
