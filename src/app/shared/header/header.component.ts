@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
 
@@ -9,6 +9,10 @@ import { AuthService } from '../../services/auth/auth.service';
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
-export class HeaderComponent {
-  constructor(public authService: AuthService) {}
+export class HeaderComponent implements OnInit {
+  constructor(public authService: AuthService) { }
+
+  ngOnInit(): void {
+    this.authService.fetchUserInfo();
+  }
 }

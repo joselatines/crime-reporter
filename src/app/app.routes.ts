@@ -8,28 +8,19 @@ import { OcrComponent } from './pages/ocr/ocr.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { authGuard } from './guard/auth.guard';
 import { ConfiguracionesComponent } from './configuraciones/configuraciones.component';
+import { adminAuthGuard } from './guard/admin-auth.guard';
+import { PoliceReportComponent } from './pages/police-report/police-report.component';
+import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.component';
 
 export const routes: Routes = [
     { path: "", redirectTo: "/dashboard", pathMatch: "full" },
     { path: "login", component: LoginComponent },
-    { path: "register", component: RegisterComponent },
+    { path: "register", component: RegisterComponent, canActivate: [adminAuthGuard] },
     { path: "dashboard", component: DashboardComponent, canActivate: [authGuard] },
     { path: "news", component: NewsComponent, canActivate: [authGuard] },
     { path: "notes", component: NotesComponent, canActivate: [authGuard] },
     { path: "map", component: MapComponent, canActivate: [authGuard] },
     { path: "ocr", component: OcrComponent, canActivate: [authGuard] },
+    { path: "unauthorized", component: UnauthorizedComponent },
     { path: 'configuraciones', component: ConfiguracionesComponent, canActivate: [authGuard] },
 ];
-
-/* export const routes: Routes = [
-    { path: "", redirectTo: "/login", pathMatch: "full" },
-    { path: "login", component: LoginComponent },
-    { path: "register", component: RegisterComponent },
-    { path: "dashboard", component: DashboardComponent},
-    { path: "news", component: NewsComponent},
-    { path: "notes", component: NotesComponent},
-    { path: "map", component: MapComponent},
-    { path: "ocr", component: OcrComponent},
-    { path: 'configuraciones', component: ConfiguracionesComponent}
-];
-*/
