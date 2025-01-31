@@ -3,7 +3,8 @@ import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './shared/header/header.component';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from './services/auth/auth.service';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { User } from '../lib/types/user';
 
 @Component({
   selector: 'app-root',
@@ -12,15 +13,25 @@ import { Subscription } from 'rxjs';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent{
   title = 'crime-reporter';
 
   constructor(private authService: AuthService) { }
 
-  ngOnInit(): void {
-    const token = this.authService.getToken();
-    if (token) {
-      this.authService.fetchUserInfo(); // Recupera la información del usuario
+  
+
+/*   ngOnInit(): void {
+    // Recupera la información del usuario si existe un token
+    if (this.authService.isAuthenticated()) {
+      this.authService.fetchUserInfo();
     }
+
+
+    // Suscríbete al observable de userInfo para cambios en tiempo real
+    this.userInfo$ = this.authService.getUserInfo();
   }
+
+  logout(): void {
+    this.authService.logout(); // Llama al método logout
+  } */
 }

@@ -8,11 +8,15 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   const token = authService.getToken();
 
-  const authReq = req.clone({
-    setHeaders: {
-      Authorization: `Bearer ${token}` // Agrega el token al encabezado
-    }
-  })
+  if (token) {
+    const authReq = req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}` // Añade el token al header
+      }
+    });
+    console.log('Token añadido a la solicitud:', authReq.headers.get('Authorization'));
+    return next(authReq);
+  }
 
-  return next(authReq);
+  return next(req);
 };

@@ -10,25 +10,12 @@ import { Subscription } from 'rxjs';
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
-export class HeaderComponent implements OnInit {
-  userInfo: any | null = null; // Almacena la información del usuario
-  userInfoSubscription!: Subscription;
+export class HeaderComponent {
+
   constructor(public authService: AuthService) { }
 
-  ngOnInit(): void {
-    this.userInfoSubscription = this.authService.getUserInfo().subscribe((info) => {
-      this.userInfo = info; // Actualiza la información del usuario
-      console.log('Información del usuario actual:', this.userInfo);
-    });
+  gOnInit(): void {
+    this.authService.fetchUserInfo();
   }
 
-  ngOnDestroy(): void {
-    if (this.userInfoSubscription) {
-      this.userInfoSubscription.unsubscribe(); // Limpia la suscripción
-    }
-  }
-
-  logout(): void {
-    this.authService.logout();
-  }
 }

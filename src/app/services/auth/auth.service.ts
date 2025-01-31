@@ -10,10 +10,10 @@ import { User } from '../../../lib/types/user';
   providedIn: 'root'
 })
 export class AuthService {
-  private API_URL = `https://crime-reporter-api.onrender.com/api/v1`
+  private readonly API_URL = `https://crime-reporter-api.onrender.com/api/v1`
   /*   private API_URL = `${environment.apiUrl}/auth`; */
-  TOKEN_KEY = 'token';
-  private userInfo = new BehaviorSubject<User | null>(null); // Almacena el rol del usuario
+  private readonly TOKEN_KEY = 'token';
+  private userRole = new BehaviorSubject<string | null>(null); // Almacena el rol del usuario
 
   constructor(private http: HttpClient, private router: Router) { }
 
@@ -31,34 +31,33 @@ export class AuthService {
 
   fetchUserInfo(): void {
     if (this.isAuthenticated()) {
-      this.http.get<{ message: string; user: User }>(`${this.API_URL}/users/me`).subscribe({
+      this.http.get<{ message: string; user: { role: string } }>(`${this.API_URL}/users/me`).subscribe({
         next: (response) => {
-          console.log('Datos del usuario:', response.user);
-          if (response.user) {
-            this.userInfo.next(response.user); // Accede al rol dentro de 'response.user'
+          console.log('Datos del usuario:', response.user.role);
+          if (response.user && response.user.role) {
+            this.userRole.next(response.user.role); // Accede al rol dentro de 'response.user'
           } else {
-            this.userInfo.next(null); // Si no hay rol, lo resetea
+            this.userRole.next(null); // Si no hay rol, lo resetea
           } // Almacena el rol en el BehaviorSubject
         },
         error: (error) => {
           console.error('Error obteniendo información del usuario:', error);
-          this.userInfo.next(null); // Resetea el rol en caso de error
+          this.userRole.next(null); // Resetea el rol en caso de error
         }
       });
     } else {
-      this.userInfo.next(null);
+      this.userRole.next(null);
     }
   }
 
-  getUserInfo(): Observable<User | null> {
-    return this.userInfo.asObservable();
+  getUserRole(): Observable<string | null> {
+    return this.userRole.asObservable();
   }
 
 
   // Método adicional para determinar si el usuario es administrador
   isAdmin(): boolean {
-    const currentUser = this.userInfo.value;
-    return currentUser ? currentUser.role === 'admin' : false;
+    return this.userRole.value === 'admin';
   }
 
   register(data: RegisterData): Observable<any> {
@@ -70,18 +69,14 @@ export class AuthService {
   }
 
   login(credentials: LoginData): Observable<any> {
-    return this.http.post(`${this.API_URL}/auth/login`, credentials, /* {
-      withCredentials: true,
-    } */).pipe(
+    return this.http.post(`${this.API_URL}/auth/login`, credentials).pipe(
       tap((response: any) => {
         this.saveToken(response.token); // Guarda el token recibido
-        this.fetchUserInfo();
-        /* this.userRole.next(response.role); */
-        console.log(response)
+        this.userRole.next(response.role);
         this.router.navigateByUrl('/dashboard');
       }),
       catchError((error) => {
-        console.error('Error en el login:', error); // Muestra el error
+        console.error('Error en el login:', error);
         return throwError(() => new Error(error.error?.message || 'Login failed'));
       })
     );
@@ -89,7 +84,7 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem(this.TOKEN_KEY);
-    this.userInfo.next(null);
+    this.userRole.next(null);
     this.router.navigateByUrl('/login');
   }
 }
