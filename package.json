@@ -21,6 +21,8 @@
     "@angular/router": "^18.2.0",
     "cors": "^2.8.5",
     "express": "^4.21.1",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
     "puppeteer": "^23.10.0",
     "puppeteer-core": "^23.10.0",
     "rxjs": "~7.8.0",

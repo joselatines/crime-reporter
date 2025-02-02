@@ -10,6 +10,15 @@ export interface RegisterData {
     email: string;
     password: string;
   }
+
+  export interface LoginResponse {
+    token: string;
+    message?: string; // Propiedad opcional
+    user?: { 
+      _id: string;
+      role: 'admin' | 'detective';
+    };
+  }
   
   export interface AuthResponse {
     token: string;

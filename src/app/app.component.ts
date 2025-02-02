@@ -17,21 +17,4 @@ export class AppComponent{
   title = 'crime-reporter';
 
   constructor(private authService: AuthService) { }
-
-  
-
-/*   ngOnInit(): void {
-    // Recupera la información del usuario si existe un token
-    if (this.authService.isAuthenticated()) {
-      this.authService.fetchUserInfo();
-    }
-
-
-    // Suscríbete al observable de userInfo para cambios en tiempo real
-    this.userInfo$ = this.authService.getUserInfo();
-  }
-
-  logout(): void {
-    this.authService.logout(); // Llama al método logout
-  } */
 }
