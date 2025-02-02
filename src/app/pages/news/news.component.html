@@ -33,6 +33,33 @@
                 <a href="{{ noticia.link }}" target="_blank"
                     class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Leer
                     más</a>
+                <!-- Botón para mostrar/ocultar el input de comentario -->
+                <br><button (click)="toggleCommentInput($index)"
+                    class="inline-block bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2">
+                    Agregar Comentario
+                </button>
+                <!-- Input de comentario -->
+                @if (showCommentInput === $index) {
+                <div class="mt-2">
+                    <input type="text" [(ngModel)]="newComment" placeholder="Escribe tu comentario..."
+                        class="border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <button (click)="addComment($index)"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2">
+                        Enviar
+                    </button>
+                </div>
+                }
+                <!-- Mostrar comentarios existentes -->
+                @if (noticia.comments && noticia.comments.length > 0) {
+                <div class="mt-4">
+                    <h3 class="font-bold mb-2">Comentarios:</h3>
+                    @for (comment of noticia.comments; track $index) {
+                    <div class="comment-container bg-gray-100 p-3 rounded-lg mb-2">
+                        <p class="text-gray-700">{{ comment }}</p>
+                    </div>
+                    }
+                </div>
+                }
             </div>
         </div>
         } @empty {
