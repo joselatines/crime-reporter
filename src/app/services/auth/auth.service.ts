@@ -1,7 +1,7 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 /* import { environment } from '../../../environments/environment'; */
-import { LoginData, RegisterData } from '../../../lib/types/auth';
+import { LoginData, LoginResponse, RegisterData } from '../../../lib/types/auth';
 import { BehaviorSubject, catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { User } from '../../../lib/types/user';
@@ -13,13 +13,32 @@ export class AuthService {
   private readonly API_URL = `https://crime-reporter-api.onrender.com/api/v1`
   /*   private API_URL = `${environment.apiUrl}/auth`; */
   private readonly TOKEN_KEY = 'token';
-  private userRole = new BehaviorSubject<string | null>(null); // Almacena el rol del usuario
+  private readonly USER_KEY = 'currentUser'
+  private currentUserSubject: BehaviorSubject<User | null>;
+  public currentUser: Observable<User | null>;
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router) {
+    const storedUser = localStorage.getItem(this.USER_KEY);
+    let user: User | null = null;
+    // Verifica que storedUser no sea `undefined` antes de parsear
+    if (storedUser !== null && storedUser !== 'undefined') {
+      try {
+        user = JSON.parse(storedUser);
+      } catch (error) {
+        console.error('Error al parsear el usuario del localStorage:', error);
+      }
+    }
 
-  saveToken(token: string): void {
-    localStorage.setItem(this.TOKEN_KEY, token);
+    this.currentUserSubject = new BehaviorSubject<User | null>(user);
+    this.currentUser = this.currentUserSubject.asObservable();
+
   }
+
+  saveToken(token: string, user: User): void {
+    localStorage.setItem(this.TOKEN_KEY, token);
+    localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+  }
+
 
   getToken(): string | null {
     return localStorage.getItem(this.TOKEN_KEY);
@@ -29,50 +48,41 @@ export class AuthService {
     return !!this.getToken();  // Comprueba si hay un token en el almacenamiento local
   }
 
-  fetchUserInfo(): void {
-    if (this.isAuthenticated()) {
-      this.http.get<{ message: string; user: { role: string } }>(`${this.API_URL}/users/me`).subscribe({
-        next: (response) => {
-          console.log('Datos del usuario:', response.user.role);
-          if (response.user && response.user.role) {
-            this.userRole.next(response.user.role); // Accede al rol dentro de 'response.user'
-          } else {
-            this.userRole.next(null); // Si no hay rol, lo resetea
-          } // Almacena el rol en el BehaviorSubject
-        },
-        error: (error) => {
-          console.error('Error obteniendo información del usuario:', error);
-          this.userRole.next(null); // Resetea el rol en caso de error
-        }
-      });
-    } else {
-      this.userRole.next(null);
-    }
+  private resetAuthState(): void {
+    this.currentUserSubject.next(null);
   }
 
-  getUserRole(): Observable<string | null> {
-    return this.userRole.asObservable();
+  private handleAuthError(error: HttpErrorResponse): Observable<never> {
+    const errorMessage = error.error?.message || 'Error desconocido';
+    return throwError(() => new Error(errorMessage));
   }
 
 
   // Método adicional para determinar si el usuario es administrador
   isAdmin(): boolean {
-    return this.userRole.value === 'admin';
+    return this.currentUserValue?.role === 'admin';
   }
 
   register(data: RegisterData): Observable<any> {
     return this.http.post(`${this.API_URL}/auth/register`, data).pipe(
-      catchError((error) => {
-        return throwError(() => error.error?.message || "Error desconocido");
-      })
+      catchError(this.handleAuthError)
     );
   }
 
+  public get currentUserValue(): User | null {
+    return this.currentUserSubject.value;
+  }
+
   login(credentials: LoginData): Observable<any> {
-    return this.http.post(`${this.API_URL}/auth/login`, credentials).pipe(
-      tap((response: any) => {
-        this.saveToken(response.token); // Guarda el token recibido
-        this.userRole.next(response.role);
+    return this.http.post<any>(`${this.API_URL}/auth/login`, credentials, {
+      withCredentials: true // ← Envía cookies automáticamente
+    }).pipe(
+      tap((response) => {
+        console.log('Respuesta del servidor en login:', response)
+        this.saveToken(response.token, response);
+        if (response.token) {
+          this.currentUserSubject.next(response);
+        }
         this.router.navigateByUrl('/dashboard');
       }),
       catchError((error) => {
@@ -81,10 +91,31 @@ export class AuthService {
       })
     );
   }
+  /*   login(credentials: LoginData): Observable<any> {
+      return this.http.post(`${this.API_URL}/auth/login`, credentials).pipe(
+        tap((response: any) => {
+          this.saveToken(response.token); // Guarda el token recibido
+          this.userRole.next(response.role);
+          this.router.navigateByUrl('/dashboard');
+          console.log("response", response)
+          this.currentUserSubject.next(response.user);
+        }),
+        catchError((error) => {
+          console.error('Error en el login:', error);
+          return throwError(() => new Error(error.error?.message || 'Login failed'));
+        })
+      );
+    } */
 
   logout() {
     localStorage.removeItem(this.TOKEN_KEY);
-    this.userRole.next(null);
+    localStorage.removeItem(this.USER_KEY);
+    this.resetAuthState();
     this.router.navigateByUrl('/login');
   }
+  /*   logout() {
+      localStorage.removeItem(this.TOKEN_KEY);
+      this.userRole.next(null);
+      this.router.navigateByUrl('/login');
+    } */
 }

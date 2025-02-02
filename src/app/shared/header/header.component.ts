@@ -14,8 +14,5 @@ export class HeaderComponent {
 
   constructor(public authService: AuthService) { }
 
-  gOnInit(): void {
-    this.authService.fetchUserInfo();
-  }
 
 }
