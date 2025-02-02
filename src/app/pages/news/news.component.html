@@ -23,7 +23,7 @@
     @if (data) {
     <div class="flex flex-wrap justify-around">
         @for (noticia of data; track $index) {
-        <div class="max-w-sm rounded overflow-hidden shadow-lg m-4">
+        <div class="max-w-sm rounded overflow-hidden shadow-lg m-4 bg-white p-4">
             <img class="w-full h-64 object-cover" [src]="noticia.imgUrl" alt="{{ noticia.title }}">
             <div class="px-6 py-4">
                 <div class="font-bold text-xl mb-2">{{ noticia.title }}</div>
@@ -31,7 +31,7 @@
             </div>
             <div class="px-6 pt-4 pb-2">
                 <a href="{{ noticia.link }}" target="_blank"
-                    class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Leer
+                    class="inline-block bg-blue-police hover:bg-blueHover-police text-white font-bold py-2 px-4 rounded">Leer
                     más</a>
             </div>
         </div>

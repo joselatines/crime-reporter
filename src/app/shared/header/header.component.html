@@ -1,23 +1,23 @@
-<header class="flex justify-between p-8 font-bold">
-    <a routerLink="/dashboard" class="hover:text-gray-500">Crime Reporter</a>
+@if(authService.isAuthenticated()){
+<header class="flex justify-between py-8 px-20 font-bold bg-white">
+    <a routerLink="/dashboard" class="uppercase hover:text-white hover:bg-blue-police py-4 px-2">Crime Reporter</a>
 
-    <div class="flex gap-7">
-        @if(authService.isAuthenticated()){
-        <a routerLink="/ocr" class="hover:text-gray-500">OCR</a>
-        <a routerLink="/news" class="hover:text-gray-500">Noticias</a>
-        <a routerLink="/report" class="hover:text-gray-500">Reporte policial</a>
-        <a routerLink="/map" class="hover:text-gray-500">Mapa</a>
-        <a routerLink="/configuraciones" class="hover:text-gray-500">Configuraciones</a>
+    <div class="flex gap-2 text-blue-police uppercase">
+        <a routerLink="/ocr" class="hover:text-white hover:bg-blue-police py-4 px-2">OCR</a>
+        <a routerLink="/news" class="hover:text-white hover:bg-blue-police py-4 px-2">Noticias</a>
+        <a routerLink="/report" class="hover:text-white hover:bg-blue-police py-4 px-2">Reporte policial</a>
+        <a routerLink="/map" class="hover:text-white hover:bg-blue-police py-4 px-2">Mapa</a>
+        <a routerLink="/configuraciones" class="hover:text-white hover:bg-blue-police py-4 px-2">Configuraciones</a>
         @if(authService.isAdmin()){
-            <a class="register" routerLink="/register">Register</a>
+        <a class="hover:text-white hover:bg-blue-police py-4 px-2" routerLink="/register">Register</a>
         }
-        <button class="py-2 px-3 rounded-md bg-red-600 hover:bg-red-700 text-white" (click)="authService.logout()">
+        <button class="py-4 px-2 rounded-md bg-red-600 hover:bg-red-700 text-white" (click)="authService.logout()">
             Cerrar sesión
         </button>
-        }
 
-        @if(!authService.isAuthenticated()){
-        <a class="py-2 px-3 rounded-md bg-blue-600 hover:bg-blue-700 text-white" routerLink="/login">Iniciar sesion</a>
-        }
+        <!--  @if(!authService.isAuthenticated()){
+            <a class="py-4 px-3 rounded-md bg-blue-600 hover:bg-blue-700 text-white" routerLink="/login">Iniciar sesion</a>
+            } -->
     </div>
 </header>
+}

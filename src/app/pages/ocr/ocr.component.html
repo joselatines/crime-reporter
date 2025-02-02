@@ -4,12 +4,12 @@
 
   <p>Selecciona una imagen para extraer el texto.</p>
 
-    <input type="file" (change)="uploadImage($event)" accept="image/*" class="file-input" />
+  <input type="file" (change)="uploadImage($event)" accept="image/*" class="file-input" />
 
-    <div * ngIf="ocrResult" class="result-container"></div>
+  <div * ngIf="ocrResult" class="result-container"></div>
 
-    <div>
-      <p class="extracted-text">{{ ocrResult }}</p>
-    </div>
+  <div>
+    <p class="extracted-text">{{ ocrResult }}</p>
+  </div>
 
 </div>

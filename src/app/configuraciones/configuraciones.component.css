@@ -1,6 +1,6 @@
 .container {
-  max-width: 600px;
-  margin: 0 auto;
+/*   max-width: 600px; */
+  margin: 80px auto;
   padding: 20px;
   background-color: #f0f0f0;
   border-radius: 10px;
@@ -48,7 +48,7 @@ label {
 .btn-submit {
   width: 100%;
   padding: 10px;
-  background-color: #0096ff;
+  background-color: #0659a4;
   border: none;
   color: white;
   font-size: 16px;
@@ -58,5 +58,5 @@ label {
 }
 
 .btn-submit:hover {
-  background-color: #007acc;
+  background-color: #3078b8;
 }

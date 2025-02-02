@@ -3,8 +3,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background-color: #f8fafc; /* Color de fondo claro */
+  min-height: 80vh;
+/*   background-color: #fff; /* Color de fondo claro  */
   padding: 20px;
   box-sizing: border-box;
 }

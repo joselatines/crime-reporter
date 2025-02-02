@@ -1,53 +1,55 @@
-<div class="login-container">
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" aria-labelledby="login-form-title">
-    <h2 id="login-form-title">Login</h2>
-
-    <!-- Campo de Email -->
-    <div>
-      <label for="email">Email:</label>
-      <input
-        id="email"
-        type="email"
-        formControlName="email"
-        aria-describedby="email-error"
-        [class.invalid]="loginForm.controls['email'].invalid && loginForm.controls['email'].touched"
-      />
-      <div *ngIf="loginForm.controls['email'].invalid && loginForm.controls['email'].touched">
-        <span id="email-error" class="error">Email inválido</span>
+<div class="py-20">
+  <div class="login-container">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" aria-labelledby="login-form-title">
+      <h2 id="login-form-title">Login</h2>
+  
+      <!-- Campo de Email -->
+      <div>
+        <label for="email">Email:</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          aria-describedby="email-error"
+          [class.invalid]="loginForm.controls['email'].invalid && loginForm.controls['email'].touched"
+        />
+        <div *ngIf="loginForm.controls['email'].invalid && loginForm.controls['email'].touched">
+          <span id="email-error" class="error">Email inválido</span>
+        </div>
       </div>
-    </div>
-
-    <!-- Campo de Contraseña -->
-    <div>
-      <label for="password">Contraseña:</label>
-      <input
-        id="password"
-        type="password"
-        formControlName="password"
-        aria-describedby="password-error"
-        [class.invalid]="loginForm.controls['password'].invalid && loginForm.controls['password'].touched"
-      />
-      <div *ngIf="loginForm.controls['password'].invalid && loginForm.controls['password'].touched">
-        <span id="password-error" class="error">La contraseña debe tener al menos 6 caracteres</span>
+  
+      <!-- Campo de Contraseña -->
+      <div>
+        <label for="password">Contraseña:</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          aria-describedby="password-error"
+          [class.invalid]="loginForm.controls['password'].invalid && loginForm.controls['password'].touched"
+        />
+        <div *ngIf="loginForm.controls['password'].invalid && loginForm.controls['password'].touched">
+          <span id="password-error" class="error">La contraseña debe tener al menos 6 caracteres</span>
+        </div>
       </div>
-    </div>
-
-    <!-- Botón de Envío -->
-    <button type="submit" [disabled]="loginForm.invalid || isLoading" [attr.aria-busy]="isLoading">
-      <span *ngIf="isLoading">Cargando...</span>
-      <span *ngIf="!isLoading">Iniciar Sesión</span>
-    </button>
-
-    <!-- Mensaje de Error del Servidor -->
-  </form>
-
-  <!-- Popup Component -->
-  <app-popup
-    [message]="popupMessage"
-    [show]="showPopup"
-    (closePopup)="closePopup()"
-    aria-live="polite"
-  ></app-popup>
+  
+      <!-- Botón de Envío -->
+      <button type="submit" [disabled]="loginForm.invalid || isLoading" [attr.aria-busy]="isLoading">
+        <span *ngIf="isLoading">Cargando...</span>
+        <span *ngIf="!isLoading">Iniciar Sesión</span>
+      </button>
+  
+      <!-- Mensaje de Error del Servidor -->
+    </form>
+  
+    <!-- Popup Component -->
+    <app-popup
+      [message]="popupMessage"
+      [show]="showPopup"
+      (closePopup)="closePopup()"
+      aria-live="polite"
+    ></app-popup>
+  </div>
 </div>
 
 
