@@ -3,10 +3,7 @@
 
     <div class="flex gap-7">
         @if(authService.isAuthenticated()){
-        <a routerLink="/ocr" class="hover:text-gray-500">OCR</a>
-        <a routerLink="/news" class="hover:text-gray-500">Noticias</a>
-        <a routerLink="/notes" class="hover:text-gray-500">Notas</a>
-        <a routerLink="/map" class="hover:text-gray-500">Mapa</a>
+
         <a routerLink="/configuraciones" class="hover:text-gray-500">Configuraciones</a>
         @if(authService.isAdmin()){
             <a class="register" routerLink="/register">Register</a>
@@ -15,7 +12,6 @@
             Cerrar sesión
         </button>
         }
-
         @if(!authService.isAuthenticated()){
         <a class="py-2 px-3 rounded-md bg-blue-600 hover:bg-blue-700 text-white" routerLink="/login">Iniciar sesion</a>
         }
