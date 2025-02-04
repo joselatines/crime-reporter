@@ -11,6 +11,7 @@ import { ConfiguracionesComponent } from './configuraciones/configuraciones.comp
 import { adminAuthGuard } from './guard/admin-auth.guard';
 import { PoliceReportComponent } from './pages/police-report/police-report.component';
 import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.component';
+import { FieldInterviewComponent } from './pages/field-interview/field-interview.component';
 
 export const routes: Routes = [
     { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -23,4 +24,5 @@ export const routes: Routes = [
     { path: "ocr", component: OcrComponent, canActivate: [authGuard] },
     { path: "unauthorized", component: UnauthorizedComponent },
     { path: 'configuraciones', component: ConfiguracionesComponent, canActivate: [authGuard] },
+    { path: 'entrevista_de_campo', component: FieldInterviewComponent, canActivate: [authGuard] },
 ];

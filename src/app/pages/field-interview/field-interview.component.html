@@ -1,0 +1,16 @@
+<div class="w-full lg:w-4/5 mx-auto">
+    <div class="flex justify-center py-12">
+        <h1 class="text-4xl font-bold uppercase">Entrevista de campo</h1>
+    </div>
+
+    <div class="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg border-2 border-blue-800">
+        <app-interviewee [formGroup]="intervieweeForm"></app-interviewee>
+        <app-interview-development [formGroup]="interviewDevelopmentForm"></app-interview-development>
+    
+        <button 
+            (click)="generatePDF()"
+            class="w-full bg-blue-police hover:bg-blueHover-police text-white py-2 px-4 rounded-md  transition-colors">
+            GENERAR ACTA
+        </button>
+    </div>
+</div>

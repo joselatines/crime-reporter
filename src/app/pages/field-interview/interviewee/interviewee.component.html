@@ -1,0 +1,24 @@
+<!-- entrevistado.component.html -->
+<div [formGroup]="formGroup">
+  <div class="mb-6 border-b pb-4">
+    <h4 class="text-lg font-bold text-blue-800 mb-4">DATOS DEL ENTREVISTADO</h4>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Nombre</label>
+        <input formControlName="nombre" class="w-full p-2 border rounded-md" placeholder="Nombre Completo">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Cédula</label>
+        <input type="number" maxlength="10" formControlName="cedula" class="w-full p-2 border rounded-md" placeholder="Cédula (V-XX.XXX.XXX)">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Edad</label>
+        <input type="number" formControlName="edad" class="w-full p-2 border rounded-md" placeholder="Edad">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Profesión</label>
+        <input formControlName="profesion" class="w-full p-2 border rounded-md" placeholder="Profesión">
+      </div>
+    </div>
+  </div>
+</div>
