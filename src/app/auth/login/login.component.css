@@ -1,21 +1,49 @@
 /* Estilos generales */
 .login-container {
-  max-width: 400px;
-  margin: 50px auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #f8fafc;
+  max-width: 80%; /* Permite que ocupe toda la pantalla */
+  margin: 0 auto; /* Centrado horizontal */
+  padding: 0; /* Quita el padding innecesario */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Ocupa toda la altura de la pantalla */
+  background-color:#ece8e7;
+}
+
+.form-image-wrapper {
+  display: flex;
+  width: 100%; /* Ocupa todo el ancho disponible */
+  max-width: 800px; /* Define un ancho máximo */
+  background-color: white;
+  border-radius: 16px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Para asegurar que no sobresalgan los bordes redondeados */
+}
+
+/* Sección de la Imagen */
+.image-section {
+  width: 50%; /* Ocupa la mitad del contenedor */
+}
+
+.image-section img {
+  width: 100%; /* La imagen ocupa toda la sección */
+  height: 100%; /* Asegura que ocupe toda la altura */
+  object-fit: cover; /* Ajusta la imagen para que se vea bien sin deformarse */
+}
+
+/* Sección del Formulario */
+.form-section {
+  width: 50%; /* Ocupa la otra mitad del contenedor */
+  padding: 32px; /* Espaciado interno */
 }
 
 #login-form-title {
-  font-size: 1.5rem; /* Tamaño de fuente más grande */
-  font-weight: bold; /* Negrita */
-  color: #111827; /* Color de texto (gris oscuro) */
-  margin-bottom: 1.5rem; /* Espaciado inferior */
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #111827;
+  margin-bottom: 1.5rem;
+  text-align: center; /* Centra el texto del título */
 }
-
 
 h2 {
   text-align: center;
@@ -29,7 +57,7 @@ label {
   text-align: left;
   margin-bottom: 0.5rem;
   font-size: 0.875rem;
-  color: #374151; /* Gris medio */
+  color: #374151;
 }
 
 input {
@@ -116,3 +144,6 @@ button[aria-busy="true"]::after {
     transform: translate(-50%, -50%) rotate(360deg);
   }
 }
+
+
+
