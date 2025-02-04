@@ -20,7 +20,7 @@ import { authInterceptor } from './interceptor/auth.interceptor';
 /*     MatDialogModule, */
     PopupComponent,
     FormsModule,
-    AppComponent
+    AppComponent,
   ],
   providers: [],
   bootstrap: []

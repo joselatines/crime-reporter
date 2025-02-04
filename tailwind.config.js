@@ -4,7 +4,13 @@ module.exports = {
     "./src/**/*.{html,ts}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'blue-police': '#0659a4',
+        'blueHover-police': '#3078b8',
+        
+      },
+    },
   },
   plugins: [],
 }

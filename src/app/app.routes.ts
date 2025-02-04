@@ -18,7 +18,7 @@ export const routes: Routes = [
     { path: "register", component: RegisterComponent, canActivate: [adminAuthGuard] },
     { path: "dashboard", component: DashboardComponent, canActivate: [authGuard] },
     { path: "news", component: NewsComponent, canActivate: [authGuard] },
-    { path: "notes", component: NotesComponent, canActivate: [authGuard] },
+    { path: "report", component: PoliceReportComponent, canActivate: [authGuard] },
     { path: "map", component: MapComponent, canActivate: [authGuard] },
     { path: "ocr", component: OcrComponent, canActivate: [authGuard] },
     { path: "unauthorized", component: UnauthorizedComponent },

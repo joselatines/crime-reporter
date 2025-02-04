@@ -1,24 +1,26 @@
-import { NgIf } from '@angular/common';
-import { Component } from '@angular/core';
+import { NgClass, NgIf } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { SpinnerSVGComponent } from "../../assets/svg/spinner-svg/spinner-svg.component";
 
 @Component({
   selector: 'app-map',
   standalone: true,
-  imports: [NgIf, SpinnerSVGComponent],
+  imports: [NgIf, NgClass, SpinnerSVGComponent],
   templateUrl: './map.component.html',
   styleUrl: './map.component.css'
 })
-export class MapComponent {
+export class MapComponent{
   isLoading = true;
   hasError = false;
 
-  onIframeMapLoad(){
+  constructor() { }
+
+  onIframeMapLoad() {
     this.isLoading = false;
     this.hasError = false;
   }
 
-  onIframeMapError(){
+  onIframeMapError() {
     this.isLoading = false;
     this.hasError = true;
   }
