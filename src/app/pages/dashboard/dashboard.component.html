@@ -1,10 +1,23 @@
-<div>
-    <h1 class="titulo">Kit de Herramientas</h1>
-    <div class="flex justify-center text-2xl">
-        <!-- @if(userInfo){
-            <p>Bienvenido, Detective 
-                <span class="capitalize font-bold">{{ userInfo.username }}</span>
-            </p>
-        } -->
+<div class="dashboard-container">
+    <h1 class="dashboard-title">Herramientas</h1>
+    <div class="button-grid">
+      <a routerLink="/ocr" class="tool-button">
+        <span class="tool-label">Reconocimiento Óptico de Caracteres</span>
+        <img src="ocr.png" alt="ocr" class="tool-icon" />
+      </a>
+      <a routerLink="/news" class="tool-button">
+        <span class="tool-label">Noticias</span>
+        <img src="news.png" alt="news" class="tool-icon" />
+      </a>
+      <a routerLink="/notes" class="tool-button">
+        <span class="tool-label">Notas</span>
+        <img src="notes.png" alt="notes" class="tool-icon" />
+      </a>
+      <a routerLink="/map" class="tool-button">
+        <span class="tool-label">Mapa</span>
+        <img src="maps.png" alt="maps" class="tool-icon" />
+      </a>
     </div>
-</div>
+  </div>
+  
+  
