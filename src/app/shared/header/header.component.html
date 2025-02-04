@@ -3,15 +3,17 @@
     <a routerLink="/dashboard" class=" py-4 px-2">Crime Reporter</a>
 
     <div class="flex gap-7">
-        <a routerLink="/dashboard" class="hover:text-white hover:bg-blue-police py-4 px-2">Dashboard</a>
-
         @if(authService.isAdmin()){
         <!-- <a routerLink="/users" class="hover:text-white hover:bg-blue-police py-4 px-2">Gestionar usuarios</a> -->
         <a class="hover:text-white hover:bg-blue-police py-4 px-2" routerLink="/register">Register</a>
+        }
+        <a routerLink="/dashboard" class="hover:text-white hover:bg-blue-police py-4 px-2">Dashboard</a>
         <button class="py-4 px-2 rounded-md bg-red-600 hover:bg-red-700 text-white" (click)="authService.logout()">
             Cerrar sesión
         </button>
-        }
+
+
+
     </div>
 
 </header>
