@@ -6,7 +6,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { IntervieweeComponent } from "../interviewee/interviewee.component";
 import { InterviewDevelopmentComponent } from '../interview-development/interview-development.component';
-import { InterviewService } from '../../../services/interview.service';
+import { InterviewService } from '../../../services/interview/interview.service';
 import { Router } from '@angular/router';
 
 @Component({

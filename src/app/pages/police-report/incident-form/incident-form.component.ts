@@ -10,4 +10,5 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 })
 export class IncidentFormComponent {
   @Input() formGroup!: FormGroup;
+  
 }

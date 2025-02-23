@@ -6,7 +6,7 @@ import { User } from '../../../lib/types/user';
 import { AuthService } from '../../services/auth/auth.service';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { InterviewService } from '../../services/interview.service';
+import { InterviewService } from '../../services/interview/interview.service';
 import { TruncatePipePipe } from '../../shared/pipe/truncate-pipe.pipe';
 
 interface FieldInterview {
@@ -22,7 +22,6 @@ interface FieldInterview {
     createdAt: Date;
     updatedAt: Date;
   };
-
 }
 
 @Component({
@@ -149,9 +148,6 @@ export class FieldInterviewComponent {
   //  Elimina una entrevista tras confirmar la acción
   deleteInterview(interviewId: string): void {
     if (!confirm('¿Estás seguro de que deseas eliminar esta entrevista?')) return;
-    /* this.interviewService.deleteInterview(interviewId).subscribe(() => {
-      this.loadInterviews();
-    }); */
     this.interviewService.deleteInterview(interviewId).subscribe({
       next: () => {
         this.loadInterviews();
