@@ -1,8 +1,8 @@
 @if(authService.isAuthenticated()){
-<header class="flex justify-between py-8 px-20 font-bold bg-white">
+<header class="flex justify-between py-8 px-4 lg:px-8 xl:px-20 font-bold bg-white text-sm md:text-base">
     <a routerLink="/dashboard" class=" py-4 px-2">Crime Reporter</a>
 
-    <div class="flex gap-7">
+    <div class="flex items-center md:gap-7">
         @if(authService.isAdmin()){
         <!-- <a routerLink="/users" class="hover:text-white hover:bg-blue-police py-4 px-2">Gestionar usuarios</a> -->
         <a class="hover:text-white hover:bg-blue-police py-4 px-2" routerLink="/register">Register</a>
