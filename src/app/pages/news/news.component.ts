@@ -1,22 +1,14 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, inject, OnInit } from '@angular/core';
-<<<<<<< HEAD
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-=======
 import { environment } from '../../../environments/environment';
 import { FormsModule } from '@angular/forms'; // Importa FormsModule para usar ngModel
 import { Comment } from '../../../lib/types/comment';
->>>>>>> 2637ba1030d69fa5d72a680b4b56d1455e6cbc11
 
 @Component({
   selector: 'app-news',
   standalone: true,
-<<<<<<< HEAD
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
-=======
   imports: [CommonModule, FormsModule, DatePipe], // Agrega DatePipe para formatear fechas
->>>>>>> 2637ba1030d69fa5d72a680b4b56d1455e6cbc11
   templateUrl: './news.component.html',
   styleUrls: ['./news.component.css'] // Corrección aquí (debe ser styleUrls en plural)
 })
@@ -26,24 +18,18 @@ export class NewsComponent implements OnInit {
   error: string | null = null;
   isLoading: boolean = false;
   placeholders: number[] = [1, 2, 3, 4];
-<<<<<<< HEAD
   
-  // Variables para comentarios
-  showCommentInput: number | null = null;
-  newComment: string = '';
 
   // Fuentes de noticias
   newsSources = [
-    { name: 'Últimas Noticias', value: 'ultimas-noticias', selected: false },
-    { name: 'El Nacional', value: 'el-nacional', selected: false },
+    { name: 'Últimas Noticias', value: 'ultimasNoticias', selected: false },
+    { name: 'El Nacional', value: 'elNacional', selected: false },
     { name: 'NTN24', value: 'ntn24', selected: false }
   ];
-=======
   showCommentInput: number | null = null; // Índice de la noticia que muestra el input de comentario
   newComment: string = ''; // Nuevo comentario
   commentAuthor: string = 'Usuario'; // Autor del comentario (podría venir de un servicio de autenticación)
   apiUrl = environment.apiUrl;
->>>>>>> 2637ba1030d69fa5d72a680b4b56d1455e6cbc11
 
   ngOnInit(): void {
     this.isLoading = true;
@@ -53,12 +39,7 @@ export class NewsComponent implements OnInit {
   // Método para obtener noticias sin filtro
   fetchData() {
     this.isLoading = true;
-<<<<<<< HEAD
-    const API_URL = "https://crime-reporter-api.onrender.com/api/v1";
-    this.httpClient.get(`${API_URL}/news`)
-=======
     this.httpClient.get(`${this.apiUrl}/news`)
->>>>>>> 2637ba1030d69fa5d72a680b4b56d1455e6cbc11
       .subscribe({
         next: (response: any) => {
           if (Array.isArray(response.data)) {
@@ -169,8 +150,6 @@ export class NewsComponent implements OnInit {
         });
     }
   }
-<<<<<<< HEAD
-=======
 
   // Método para eliminar un comentario
   deleteComment(newsIndex: number, commentId: string): void {
@@ -188,5 +167,4 @@ export class NewsComponent implements OnInit {
         }
       });
   }
->>>>>>> 2637ba1030d69fa5d72a680b4b56d1455e6cbc11
 }
