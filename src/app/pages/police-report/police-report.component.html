@@ -1,26 +1,157 @@
-<div class="w-full lg:w-4/5 mx-auto">
-    <div class="flex justify-center py-12">
-        <h1 class="text-4xl font-bold uppercase">Reporte policial</h1>
-    </div>
+<div class="w-full py-8 lg:w-4/5 mx-auto">
+  <div class="flex  justify-center py-12">
+    <h1 class="text-center text-4xl font-bold uppercase">Reporte policial</h1>
+  </div>
 
-    <div class="flex flex-col gap-6  px-6 py-8">
-        <!-- Componentes modularizados -->
-        <app-incident-form [formGroup]="incidentForm"></app-incident-form>
-    
-        <app-involved-people 
-          [people]="involvedPeople"
-          (addPerson)="addInvolvedPerson()">
-        </app-involved-people>
-    
-        <app-evidence-list 
-          [evidenceItems]="items"
-          (addEvidence)="addEvidence()">
-        </app-evidence-list>
-    
-        <button 
-          (click)="generatePDF()" 
-          class="bg-blue-police hover:bg-blueHover-police text-white py-4 rounded-md">
-          Generar Acta Policial
-        </button>
+  <!-- Barra de Búsqueda -->
+  <div class="flex gap-2 mb-4">
+    <div class="w-full">
+      <input type="text" [(ngModel)]="searchTerm" (input)="applyFilter()" placeholder="Buscar por ubicación, descripción o funcionario..."
+        class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-police focus:border-transparent">
     </div>
+    <a routerLink="crear"
+      class="text-nowrap m-auto py-3 px-4 rounded-lg bg-blue-police hover:bg-blueHover-police text-white">Crear
+      reporte</a>
+  </div>
+
+  <!-- Tabla de Reportes -->
+  <div class=" bg-white rounded-lg shadow-md overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Fecha
+        </th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Ubicación
+        </th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Descripción
+        </th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Funcionario
+        </th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Acciones
+        </th>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <!-- Filas de datos -->
+        @for (policeReport of filteredPoliceReport; track $index) {
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">
+            {{ policeReport.time | date:'dd/MM/yyyy HH:mm'}}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            {{ policeReport.location || 'N/A' }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            {{ policeReport.description | truncatePipe:15 }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            {{ currentUser?.username || 'Usuario no autenticado' }}
+          </td>
+          <td class="flex gap-2 px-6 py-4 whitespace-nowrap">
+            <button class="text-blue-600 hover:text-blue-900" (click)="onEditInterview(policeReport)">Editar
+            </button>
+            <button class="text-green-600 hover:text-green-900" (click)="generatePDF(policeReport)">Descargar
+            </button>
+            @if (policeReport._id) {
+            <button class="text-red-600 hover:text-red-900" (click)="deleteReport(policeReport._id)">Eliminar
+            </button>
+            }
+          </td>
+        </tr>
+        } @empty {
+        <!-- Caso sin resultados -->
+        <td colspan="5" class="px-6 py-4 text-gray-500">
+          No se encontraron reportes
+        </td>
+        }
+      </tbody>
+    </table>
+
+  </div>
+
+<!-- Modal de edición -->
+@if(selectedReport){
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+  <div class="bg-white p-6 rounded-lg max-w-2xl w-full">
+    <h3 class="text-lg font-bold mb-4">Editar Reporte Policial</h3>
+    <form [formGroup]="editForm" (ngSubmit)="onSaveEdit()">
+      <!-- Descripción del Incidente -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Ubicación</label>
+          <input type="text" formControlName="location" class="w-full p-2 border rounded-md">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Fecha y Hora</label>
+          <input type="datetime-local" formControlName="time" class="w-full p-2 border rounded-md">
+        </div>
+        <div class="col-span-2">
+          <label class="block text-sm font-medium text-gray-700">Descripción de los Hechos</label>
+          <textarea formControlName="description" class="w-full p-2 border rounded-md" rows="4"></textarea>
+        </div>
+        <div class="col-span-2">
+          <label class="block text-sm font-medium text-gray-700">Medidas de Seguridad</label>
+          <textarea formControlName="securityMeasures" class="w-full p-2 border rounded-md" rows="2"></textarea>
+        </div>
+        <div class="col-span-2">
+          <label class="block text-sm font-medium text-gray-700">Observaciones</label>
+          <textarea formControlName="observations" class="w-full p-2 border rounded-md" rows="2"></textarea>
+        </div>
+        <div class="col-span-2">
+          <label class="block text-sm font-medium text-gray-700">Anexos</label>
+          <textarea formControlName="attachments" class="w-full p-2 border rounded-md" rows="2"></textarea>
+        </div>
+      </div>
+
+      <!-- Evidencias Recolectadas -->
+      <!-- <div class="mt-4" formArrayName="evidenceItems">
+        <h3 class="text-lg font-bold">Evidencias Recolectadas</h3>
+        <div *ngFor="let item of evidenceItems.controls; let i = index" class="mb-4">
+          <label class="block text-sm font-medium text-gray-700">Evidencia {{ i + 1 }}</label>
+          <input type="text" [formControlName]="i" class="w-full p-2 border rounded-md">
+        </div>
+      </div> -->
+
+      <!-- Personas Involucradas -->
+<!--         <div class="mt-4" formArrayName="involvedPeople">
+        <h3 class="text-lg font-bold">Personas Involucradas</h3>
+        <div formArrayName="involvedPeople">
+          <div *ngFor="let person of involvedPeople.controls; let i = index" [formGroupName]="i" class="mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Nombre</label>
+                <input type="text" formControlName="name" class="w-full p-2 border rounded-md">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Cédula</label>
+                <input type="text" maxlength="10" formControlName="cedula" class="w-full p-2 border rounded-md">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Rol</label>
+                <select formControlName="role" class="w-full p-2 border rounded-md">
+                  <option value="testigo">Testigo</option>
+                  <option value="sospechoso">Sospechoso</option>
+                  <option value="víctima">Víctima</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Edad</label>
+                <input type="number" formControlName="edad" class="w-full p-2 border rounded-md">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> -->
+
+      <div class="flex justify-end mt-4">
+        <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-md">Guardar</button>
+        <button type="button" (click)="selectedReport = null"
+          class="ml-2 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md">Cancelar</button>
+      </div>
+    </form>
+  </div>
 </div>
+}

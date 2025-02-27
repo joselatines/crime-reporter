@@ -10,7 +10,7 @@ import { User } from '../../../lib/types/user';
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_URL = `https://crime-reporter-api.onrender.com/api/v1`
+  private readonly API_URL = `https://crime-reporter-api.onrender.com/api/v1`;
   /*   private API_URL = `${environment.apiUrl}/auth`; */
   private readonly TOKEN_KEY = 'token';
   private readonly USER_KEY = 'currentUser'

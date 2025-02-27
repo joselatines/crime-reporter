@@ -1,16 +1,140 @@
 <div class="w-full lg:w-4/5 mx-auto">
     <div class="flex justify-center py-12">
-        <h1 class="text-4xl font-bold uppercase">Entrevista de campo</h1>
+        <h1 class="text-4xl font-bold uppercase">Declaraciones</h1>
     </div>
 
-    <div class="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg border-2 border-blue-800">
-        <app-interviewee [formGroup]="intervieweeForm"></app-interviewee>
-        <app-interview-development [formGroup]="interviewDevelopmentForm"></app-interview-development>
-    
-        <button 
-            (click)="generatePDF()"
-            class="w-full bg-blue-police hover:bg-blueHover-police text-white py-2 px-4 rounded-md  transition-colors">
-            GENERAR ACTA
-        </button>
+    <!-- Barra de Búsqueda -->
+    <div class="flex gap-2 mb-4">
+        <div class="w-full">
+            <input type="text" [(ngModel)]="searchTerm" (input)="applyFilter()"
+                placeholder="Buscar por cédula o nombre..."
+                class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-police focus:border-transparent">
+        </div>
+        <a routerLink="crear"
+            class="text-nowrap m-auto py-3 px-4 rounded-lg bg-blue-police hover:bg-blueHover-police text-white">Crear
+            entrevista</a>
+    </div>
+
+    <!-- Tabla de Entrevistas -->
+    <div class="bg-white rounded-lg shadow-md overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Fecha
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Entrevistado
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Cédula
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Declaración
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Funcionario
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Acciones
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                <!-- Caso sin resultados -->
+                <tr *ngIf="interviews.length === 0">
+                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                        No se encontraron entrevistas
+                    </td>
+                </tr>
+
+                <!-- Filas de datos -->
+                <tr *ngFor="let interview of filteredInterviews">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        {{ interview.entrevistado.createdAt | date:'dd/MM/yyyy HH:mm'}}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        {{ interview.entrevistado.name || 'N/A' }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        {{ interview.entrevistado.cedula || 'N/A' }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="truncate max-w-xs cursor-help" [title]="interview.declaracion"
+                            (click)="openDeclarationModal(interview.declaracion)">
+                            {{ interview.declaracion | truncatePipe:15 }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        {{ currentUser?.username || 'Usuario no autenticado' }}
+                    </td>
+                    <td class="flex gap-2 px-6 py-4 whitespace-nowrap">
+                        <button class="text-blue-600 hover:text-blue-900" (click)="onEditInterview(interview)">Editar
+                        </button>
+                        <button class="text-green-600 hover:text-green-900" (click)="generatePDF(interview)">Descargar
+                        </button>
+                        <button class="text-red-600 hover:text-red-900"
+                            (click)="deleteInterview(interview._id)">Eliminar
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal para mostrar la declaración completa -->
+    <div *ngIf="selectedDeclaration" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg max-w-2xl w-full overflow-hidden">
+            <h3 class="text-lg font-bold mb-4">Declaración Completa</h3>
+            <p class="w-full break-words text-wrap h-full">{{ selectedDeclaration }}</p>
+            <button (click)="selectedDeclaration = ''"
+                class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                Cerrar
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal de edición -->
+    <div *ngIf="selectedInterview" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg max-w-2xl w-full">
+            <h3 class="text-lg font-bold mb-4">Editar Entrevista</h3>
+            <form [formGroup]="editForm" (ngSubmit)="onSaveEdit()">
+                <!-- Campos del formulario -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Nombre</label>
+                        <input formControlName="nombre" class="w-full p-2 border rounded-md"
+                            placeholder="Nombre Completo">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Cédula</label>
+                        <input type="text" maxlength="10" formControlName="cedula" appCedulaFormat
+                            class="w-full p-2 border rounded-md" placeholder="Cédula (V-XX.XXX.XXX)">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Edad</label>
+                        <input type="number" formControlName="edad" class="w-full p-2 border rounded-md"
+                            placeholder="Edad">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Profesión</label>
+                        <input formControlName="profesion" class="w-full p-2 border rounded-md" placeholder="Profesión">
+                    </div>
+                </div>
+
+                <!-- Campo para la Declaración -->
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-gray-700">Declaración</label>
+                    <textarea formControlName="declaracion" class="w-full p-2 border rounded-md" rows="4"
+                        placeholder="Declaración"></textarea>
+                </div>
+
+                <div class="flex justify-end mt-2">
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-md">Guardar</button>
+                    <button type="button" (click)="selectedInterview = null"
+                        class="ml-2 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md">Cancelar</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>

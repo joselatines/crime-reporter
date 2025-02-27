@@ -10,16 +10,27 @@ import { FormArray, FormBuilder, FormControl, ReactiveFormsModule } from '@angul
   styleUrl: './evidence-list.component.css'
 })
 export class EvidenceListComponent {
-  @Input() evidenceItems!: FormArray<FormControl>;
+  @Input() evidenceItems!: FormArray;
   @Output() addEvidence = new EventEmitter<void>();
+/*   @Input() evidenceItems!: FormArray<FormControl>;
+  @Output() addEvidence = new EventEmitter<void>(); */
 
-  constructor(private fb: FormBuilder) {}
+/*   constructor(private fb: FormBuilder) {}
 
   createItem(): FormControl {
     return this.fb.control('');
   }
+ */
+
+  getFormControl(index: number): FormControl {
+    return this.evidenceItems.at(index) as FormControl;
+  }
 
   onAddEvidence() {
     this.addEvidence.emit();
+  }
+
+  removePerson(index: number): void {
+    this.evidenceItems.removeAt(index);
   }
 }

@@ -10,6 +10,5 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 })
 export class IntervieweeComponent{
   @Input() formGroup!: FormGroup;
-  
-  estadosCiviles = ['Soltero', 'Casado', 'Divorciado', 'Viudo'];
+
 }

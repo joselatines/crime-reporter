@@ -1,12 +1,22 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, inject, OnInit } from '@angular/core';
+<<<<<<< HEAD
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+=======
+import { environment } from '../../../environments/environment';
+import { FormsModule } from '@angular/forms'; // Importa FormsModule para usar ngModel
+import { Comment } from '../../../lib/types/comment';
+>>>>>>> 2637ba1030d69fa5d72a680b4b56d1455e6cbc11
 
 @Component({
   selector: 'app-news',
   standalone: true,
+<<<<<<< HEAD
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
+=======
+  imports: [CommonModule, FormsModule, DatePipe], // Agrega DatePipe para formatear fechas
+>>>>>>> 2637ba1030d69fa5d72a680b4b56d1455e6cbc11
   templateUrl: './news.component.html',
   styleUrls: ['./news.component.css'] // Corrección aquí (debe ser styleUrls en plural)
 })
@@ -16,6 +26,7 @@ export class NewsComponent implements OnInit {
   error: string | null = null;
   isLoading: boolean = false;
   placeholders: number[] = [1, 2, 3, 4];
+<<<<<<< HEAD
   
   // Variables para comentarios
   showCommentInput: number | null = null;
@@ -27,6 +38,12 @@ export class NewsComponent implements OnInit {
     { name: 'El Nacional', value: 'el-nacional', selected: false },
     { name: 'NTN24', value: 'ntn24', selected: false }
   ];
+=======
+  showCommentInput: number | null = null; // Índice de la noticia que muestra el input de comentario
+  newComment: string = ''; // Nuevo comentario
+  commentAuthor: string = 'Usuario'; // Autor del comentario (podría venir de un servicio de autenticación)
+  apiUrl = environment.apiUrl;
+>>>>>>> 2637ba1030d69fa5d72a680b4b56d1455e6cbc11
 
   ngOnInit(): void {
     this.isLoading = true;
@@ -36,14 +53,25 @@ export class NewsComponent implements OnInit {
   // Método para obtener noticias sin filtro
   fetchData() {
     this.isLoading = true;
+<<<<<<< HEAD
     const API_URL = "https://crime-reporter-api.onrender.com/api/v1";
     this.httpClient.get(`${API_URL}/news`)
+=======
+    this.httpClient.get(`${this.apiUrl}/news`)
+>>>>>>> 2637ba1030d69fa5d72a680b4b56d1455e6cbc11
       .subscribe({
         next: (response: any) => {
           if (Array.isArray(response.data)) {
             this.isLoading = false;
+            console.log(response.data.length)
+            console.log("Respuesta del servidor:", response);
             this.data = response.data.map((noticia: any) => {
               return { ...noticia, comments: [] };
+            });
+            
+            // Fetch comments for each news item
+            this.data.forEach((noticia, index) => {
+              this.fetchCommentsForNews(noticia._id, index);
             });
           } else {
             this.error = "El servidor no retornó un array válido.";
@@ -102,12 +130,63 @@ export class NewsComponent implements OnInit {
     this.newComment = ''; // Limpiar el input al cambiar de noticia
   }
 
+  // Fetch comments for a specific news item
+  fetchCommentsForNews(newsId: string, index: number): void {
+    this.httpClient.get<{message: string, data: Comment[]}>(`${this.apiUrl}/comments/news/${newsId}`)
+      .subscribe({
+        next: (response) => {
+          this.data[index].comments = response.data;
+        },
+        error: (err) => {
+          console.error(`Error fetching comments for news ${newsId}:`, err);
+        }
+      });
+  }
+
   // Método para agregar un comentario
   addComment(index: number): void {
     if (this.newComment.trim()) {
-      this.data[index].comments.push(this.newComment);
-      this.newComment = ''; // Limpiar el input después de agregar el comentario
-      this.showCommentInput = null; // Ocultar el input después de agregar el comentario
+      const newsId = this.data[index]._id;
+      
+      const commentData = {
+        newsId: newsId,
+        author: this.commentAuthor,
+        content: this.newComment
+      };
+      
+      this.httpClient.post<{message: string, data: Comment}>(`${this.apiUrl}/comments`, commentData)
+        .subscribe({
+          next: (response) => {
+            // Add the new comment to the news item's comments array
+            this.data[index].comments.push(response.data);
+            this.newComment = ''; // Limpiar el input después de agregar el comentario
+            this.showCommentInput = null; // Ocultar el input después de agregar el comentario
+          },
+          error: (err) => {
+            console.error('Error adding comment:', err);
+            // You could add error handling here, like showing an error message to the user
+          }
+        });
     }
   }
+<<<<<<< HEAD
+=======
+
+  // Método para eliminar un comentario
+  deleteComment(newsIndex: number, commentId: string): void {
+    this.httpClient.delete<{message: string, data: Comment}>(`${this.apiUrl}/comments/${commentId}`)
+      .subscribe({
+        next: (response) => {
+          // Remove the comment from the array
+          this.data[newsIndex].comments = this.data[newsIndex].comments.filter(
+            (comment: Comment) => comment._id !== commentId
+          );
+        },
+        error: (err) => {
+          console.error('Error deleting comment:', err);
+          // Could add error handling here, like showing an error message
+        }
+      });
+  }
+>>>>>>> 2637ba1030d69fa5d72a680b4b56d1455e6cbc11
 }

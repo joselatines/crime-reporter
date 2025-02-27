@@ -11,6 +11,8 @@ import { adminAuthGuard } from './guard/admin-auth.guard';
 import { PoliceReportComponent } from './pages/police-report/police-report.component';
 import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.component';
 import { FieldInterviewComponent } from './pages/field-interview/field-interview.component';
+import { FieldInterviewFormComponent } from './pages/field-interview/field-interview-form/field-interview-form.component';
+import { PoliceReportFormComponent } from './pages/police-report/police-report-form/police-report-form.component';
 
 export const routes: Routes = [
     { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -18,10 +20,12 @@ export const routes: Routes = [
     { path: "register", component: RegisterComponent, canActivate: [adminAuthGuard] },
     { path: "dashboard", component: DashboardComponent, canActivate: [authGuard] },
     { path: "news", component: NewsComponent, canActivate: [authGuard] },
-    { path: "report", component: PoliceReportComponent, canActivate: [authGuard] },
+    { path: "reporte", component: PoliceReportComponent, canActivate: [authGuard] },
+    { path: "reporte/crear", component: PoliceReportFormComponent, canActivate: [authGuard] },
     { path: "map", component: MapComponent, canActivate: [authGuard] },
     { path: "ocr", component: OcrComponent, canActivate: [authGuard] },
     { path: "unauthorized", component: UnauthorizedComponent },
     { path: 'configuraciones', component: ConfiguracionesComponent, canActivate: [authGuard] },
     { path: 'entrevista_de_campo', component: FieldInterviewComponent, canActivate: [authGuard] },
+    { path: 'entrevista_de_campo/crear', component: FieldInterviewFormComponent, canActivate: [authGuard] },
 ];

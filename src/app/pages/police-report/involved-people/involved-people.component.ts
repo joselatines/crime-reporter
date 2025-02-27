@@ -1,6 +1,6 @@
 import { NgFor } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-involved-people',
@@ -10,11 +10,39 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './involved-people.component.css'
 })
 export class InvolvedPeopleComponent {
-  involvedPeople: any[] = [];
-  @Input() people!: any[];
+  @Input() parentForm!: FormGroup;
+/*   @Input() people!: FormArray; */
   @Output() addPerson = new EventEmitter<void>();
 
-  onAddPerson() {
-    this.addPerson.emit();
+  get involvedPeople(): FormArray {
+    return this.parentForm.get('involvedPeople') as FormArray;
   }
+
+  constructor(private fb: FormBuilder) {}
+
+  get people(): FormArray {
+    return this.parentForm.get('people') as FormArray;
+  }
+
+  // Método para agregar una persona
+  onAddPerson(): void {
+    this.involvedPeople.push(this.createPerson());
+  }
+
+  // Método para eliminar una persona
+  removePerson(index: number): void {
+    this.involvedPeople.removeAt(index);
+  }
+
+  // Método para crear un nuevo grupo de persona
+  private createPerson(): FormGroup {
+    return this.fb.group({
+      name: ['', Validators.required],
+      cedula: ['V-', Validators.required],
+      role: ['testigo', Validators.required],
+      edad: [0, [Validators.required, Validators.min(0)]],
+    });
+  }
+
+
 }
