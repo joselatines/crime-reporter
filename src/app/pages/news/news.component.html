@@ -1,5 +1,22 @@
 <main class="p-4">
-    <h1 class="text-2xl font-bold mb-4">Últimas Noticias</h1>
+    <h1 class="text-2xl font-bold mb-4"></h1>
+
+<!-- Checkboxes para seleccionar las fuentes -->
+<div class="mb-4">
+    <h2 class="text-xl font-semibold">Selecciona las fuentes:</h2>
+    <div *ngFor="let source of newsSources">
+        <label class="inline-flex items-center">
+            <input type="checkbox" [(ngModel)]="source.selected" class="mr-2">
+            {{ source.name }}
+        </label>
+    </div>
+    <!-- Botón para actualizar las noticias -->
+    <button (click)="updateNews()" 
+            class="bg-blue-police hover:bg-blueHover-police text-white font-bold py-2 px-4 rounded mt-2">
+        Mostrar Noticias
+    </button>
+</div>
+
     @if (isLoading) {
     <div class="flex justify-around flex-wrap">
         @for (cards of placeholders; track $index) {
