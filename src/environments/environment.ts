@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:5000/api/v1',
+  apiUrl: 'https://crime-reporter-api.onrender.com/api/v1',
 };

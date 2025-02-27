@@ -28,9 +28,14 @@
             <div class="p-4">
                 <div class="font-bold text-xl mb-2">{{ noticia.title }}</div>
                 <p class="text-gray-700 text-base">{{ noticia.description }}</p>
+                <br/>
+                <hr/>
+                <a href="{{ noticia.authorUrl }}" target="_blank" class="text-gray-700 text-base border-">{{ noticia.author }}</a>
+                <p class="text-gray-700 text-base">{{ noticia.publishedAt }}</p>
+                <!-- <p class="text-gray-700 text-base">{{ noticia.sourceWebsite }}</p> -->
             </div>
             <div class="flex flex-col justify-between text-center px-6 pt-4 pb-2">
-                <a href="{{ noticia.link }}" target="_blank"
+                <a href="{{ noticia.url }}" target="_blank"
                     class="inline-block bg-blue-police hover:bg-blueHover-police text-white font-bold py-2 px-4 rounded">Leer
                     más</a>
                 <!-- Botón para mostrar/ocultar el input de comentario -->
@@ -55,7 +60,19 @@
                     <h3 class="font-bold mb-2">Comentarios:</h3>
                     @for (comment of noticia.comments; track $index) {
                     <div class="comment-container bg-gray-100 p-3 rounded-lg mb-2">
-                        <p class="text-gray-700">{{ comment }}</p>
+                        <div class="flex justify-between items-center mb-1">
+                            <p class="font-semibold text-blue-police">{{ comment.author }}</p>
+                            <div class="flex items-center">
+                                <p class="text-xs text-gray-500 mr-2">{{ comment.createdAt | date:'short' }}</p>
+                                <button (click)="deleteComment($index, comment._id)" 
+                                        class="text-red-500 hover:text-red-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-gray-700">{{ comment.content }}</p>
                     </div>
                     }
                 </div>
