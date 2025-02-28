@@ -1,15 +1,41 @@
 <div class="container">
   <h1>Configuraciones</h1>
 
+  @if (isLoading) {
+    <div class="loading-spinner">
+      <p>Cargando...</p>
+    </div>
+  }
+
+  @if (successMessage) {
+    <div class="alert alert-success">
+      {{ successMessage }}
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+  }
+
   <form (ngSubmit)="onSubmit()" class="config-form">
     <div class="form-group">
       <label for="email">Correo para notificaciones:</label>
-      <input type="email" id="email"  name="email" required class="form-control"> <!-- [(ngModel)]="config.email" estos son los comando que dan error si los pones -->
+      <input type="email" id="email" [(ngModel)]="config.email" name="email" required class="form-control">
+      <small class="form-text text-muted">Recibirás notificaciones cuando se publiquen noticias con las palabras que especifiques.</small>
     </div>
     <div class="form-group">
-      <label for="palabras">Palabras en noticias:</label>
-      <input type="text" id="palabras"  name="palabras" required class="form-control"> <!--  [(ngModel)]="config.palabras" estos son los comando que dan error si los pones-->
+      <label for="palabras">Palabras en noticias (separadas por comas):</label>
+      <input type="text" id="palabras" [(ngModel)]="config.palabras" name="palabras" required class="form-control">
+      <small class="form-text text-muted">Ejemplo: robo, asalto, secuestro</small>
     </div>
-    <button type="submit" class="btn-submit">Guardar configuraciones</button>
+    <button type="submit" class="btn-submit" [disabled]="isLoading">
+      @if (isLoading) {
+        Guardando...
+      } @else {
+        Guardar configuraciones
+      }
+    </button>
   </form>
 </div>
