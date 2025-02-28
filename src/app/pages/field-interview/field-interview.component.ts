@@ -175,7 +175,8 @@ export class FieldInterviewComponent {
     // ========== ENCABEZADO INSTITUCIONAL ==========
     try {
       const logo = new Image();
-      logo.src = 'logo/cicpc-logo.jpg';
+      logo.src = 'logo/Flag_of_Venezuela.png';
+      // logo.src = 'logo/cicpc-logo.jpg';
       doc.addImage(logo, 'JPG', margin, yPos, 30, 30);
     } catch (error) {
       console.error('Error cargando el logo:', error);
@@ -187,8 +188,12 @@ export class FieldInterviewComponent {
     const headerText = [
       "REPÚBLICA BOLIVARIANA DE VENEZUELA",
       "MINISTERIO DEL PODER POPULAR PARA RELACIONES INTERIORES, JUSTICIA Y PAZ",
-      "CUERPO DE INVESTIGACIONES CIENTÍFICAS, PENALES Y CRIMINALÍSTICAS (CICPC)"
     ];
+/*     const headerText = [
+      "REPÚBLICA BOLIVARIANA DE VENEZUELA",
+      "MINISTERIO DEL PODER POPULAR PARA RELACIONES INTERIORES, JUSTICIA Y PAZ",
+      "CUERPO DE INVESTIGACIONES CIENTÍFICAS, PENALES Y CRIMINALÍSTICAS (CICPC)"
+    ]; */
 
     headerText.forEach((line, index) => {
       doc.text(line, margin + 35, yPos + 10 + (index * 5));
@@ -281,7 +286,7 @@ export class FieldInterviewComponent {
 
     // ========== FIRMAS Y SELLOS ==========
     const sello = new Image();
-    sello.src = 'logo/cicpc-logo.jpg';
+    sello.src = 'logo/Flag_of_Venezuela.png';
     doc.addImage(sello, 'PNG', margin, doc.internal.pageSize.getHeight() - 50, 40, 40);
 
     // Firma del funcionario

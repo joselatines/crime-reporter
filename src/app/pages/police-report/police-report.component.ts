@@ -166,7 +166,8 @@ export class PoliceReportComponent {
 
     // ========== ENCABEZADO INSTITUCIONAL ==========
     const logo = new Image();
-    logo.src = 'logo/cicpc-logo.jpg';
+    logo.src = 'logo/Flag_of_Venezuela.png';
+    /* logo.src = 'logo/cicpc-logo.jpg'; */
 
     try {
       doc.addImage(logo, 'JPEG', margin, yPos, 25, 25);
@@ -179,7 +180,8 @@ export class PoliceReportComponent {
     doc.setFont("helvetica", "bold");
 
     const headerLines = doc.splitTextToSize(
-      "REPÚBLICA BOLIVARIANA DE VENEZUELA - MINISTERIO DEL PODER POPULAR PARA RELACIONES INTERIORES, JUSTICIA Y PAZ - CUERPO DE INVESTIGACIONES CIENTÍFICAS, PENALES Y CRIMINALÍSTICAS (CICPC)",
+      //  "REPÚBLICA BOLIVARIANA DE VENEZUELA - MINISTERIO DEL PODER POPULAR PARA RELACIONES INTERIORES, JUSTICIA Y PAZ - CUERPO DE INVESTIGACIONES CIENTÍFICAS, PENALES Y CRIMINALÍSTICAS (CICPC)",
+      "REPÚBLICA BOLIVARIANA DE VENEZUELA - MINISTERIO DEL PODER POPULAR PARA RELACIONES INTERIORES, JUSTICIA Y PAZ",
       pageWidth - margin * 2 - 30 // Ancho disponible
     );
 
@@ -292,7 +294,7 @@ export class PoliceReportComponent {
       }
 
       const sello = new Image();
-      sello.src = 'logo/cicpc-logo.jpg';
+      sello.src = 'logo/Flag_of_Venezuela.png';
       doc.addImage(sello, 'PNG', margin, yPos + 10, 30, 30);
 
       if (this.currentUser) {
