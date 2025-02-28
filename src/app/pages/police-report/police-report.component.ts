@@ -32,11 +32,11 @@ export class PoliceReportComponent {
   constructor(private fb: FormBuilder, private authService: AuthService, private policeReportService: PoliceReportService) {
     // Inicializar formularios con campos vacíos
     this.incidentForm = this.fb.group({
-      location: [''],
-      description: [''],
-      time: [''],
-      securityMeasures: [''],
-      observations: [''],
+      location: ['', Validators.required],
+      description: ['', Validators.required],
+      time: ['', Validators.required],
+      securityMeasures: ['', Validators.required],
+      observations: ['', Validators.required],
       attachments: [''],
     });
 

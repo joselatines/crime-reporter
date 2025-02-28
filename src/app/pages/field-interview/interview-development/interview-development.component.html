@@ -4,5 +4,8 @@
     <h4 class="text-lg font-bold text-blue-800 mb-4">DESARROLLO DE LA ENTREVISTA</h4>
     <textarea formControlName="declaracion" rows="6" class="w-full p-2 border rounded-md bg-gray-50"
       placeholder="Declaración literal..."></textarea>
+      <div *ngIf="formGroup.get('declaracion')?.invalid && formGroup.get('declaracion')?.touched" class="text-red-500 text-sm">
+        La declaración es requerida
+      </div>
   </div>
 </div>
