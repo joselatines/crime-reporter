@@ -13,6 +13,7 @@ import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.compone
 import { FieldInterviewComponent } from './pages/field-interview/field-interview.component';
 import { FieldInterviewFormComponent } from './pages/field-interview/field-interview-form/field-interview-form.component';
 import { PoliceReportFormComponent } from './pages/police-report/police-report-form/police-report-form.component';
+import { UsersComponent } from './pages/admin/users/users.component';
 
 export const routes: Routes = [
     { path: "", redirectTo: "/dashboard", pathMatch: "full" },
@@ -20,6 +21,7 @@ export const routes: Routes = [
     { path: "register", component: RegisterComponent, canActivate: [adminAuthGuard] },
     { path: "dashboard", component: DashboardComponent, canActivate: [authGuard] },
     { path: "news", component: NewsComponent, canActivate: [authGuard] },
+    { path: "users", component: UsersComponent, canActivate: [authGuard] },
     { path: "reporte", component: PoliceReportComponent, canActivate: [authGuard] },
     { path: "reporte/crear", component: PoliceReportFormComponent, canActivate: [authGuard] },
     { path: "map", component: MapComponent, canActivate: [authGuard] },
