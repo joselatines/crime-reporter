@@ -6,18 +6,30 @@
       <div>
         <label class="block text-sm font-medium text-gray-700">Nombre</label>
         <input formControlName="nombre" class="w-full p-2 border rounded-md" placeholder="Nombre Completo">
+        <div *ngIf="formGroup.get('nombre')?.invalid && formGroup.get('nombre')?.touched" class="text-red-500 text-sm">
+          El nombre es requerido
+        </div>
       </div>
       <div>
         <label class="block text-sm font-medium text-gray-700">Cédula</label>
         <input type="text" maxlength="10" formControlName="cedula" appCedulaFormat class="w-full p-2 border rounded-md" placeholder="Cédula (V-XX.XXX.XXX)">
+        <div *ngIf="formGroup.get('cedula')?.invalid && formGroup.get('cedula')?.touched" class="text-red-500 text-sm">
+          La cédula es requerida
+        </div>
       </div>
       <div>
         <label class="block text-sm font-medium text-gray-700">Edad</label>
         <input type="number" formControlName="edad" class="w-full p-2 border rounded-md" placeholder="Edad">
+        <div *ngIf="formGroup.get('edad')?.invalid && formGroup.get('edad')?.touched" class="text-red-500 text-sm">
+          La edad es requerida
+        </div>
       </div>
       <div>
         <label class="block text-sm font-medium text-gray-700">Profesión</label>
         <input formControlName="profesion" class="w-full p-2 border rounded-md" placeholder="Profesión">
+        <div *ngIf="formGroup.get('profesion')?.invalid && formGroup.get('profesion')?.touched" class="text-red-500 text-sm">
+          La profesión es requerida
+        </div>
       </div>
     </div>
   </div>

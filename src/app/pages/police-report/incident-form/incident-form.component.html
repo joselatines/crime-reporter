@@ -6,22 +6,37 @@
         <div>
           <label class="block text-base font-medium text-gray-700">Ubicación</label>
           <input type="text" formControlName="location" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm">
+          <div *ngIf="formGroup.get('location')?.invalid && formGroup.get('location')?.touched" class="text-red-500 text-sm">
+            La locación es requerida
+          </div>
         </div>
         <div>
           <label class="block text-base font-medium text-gray-700">Fecha y Hora</label>
           <input type="datetime-local" formControlName="time" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm">
+          <div *ngIf="formGroup.get('time')?.invalid && formGroup.get('time')?.touched" class="text-red-500 text-sm">
+            La fecha es requerida
+          </div>
         </div>
         <div class="col-span-2">
           <label class="block text-base font-medium text-gray-700">Descripción de los Hechos</label>
           <textarea formControlName="description" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm" rows="4"></textarea>
+          <div *ngIf="formGroup.get('description')?.invalid && formGroup.get('description')?.touched" class="text-red-500 text-sm">
+            La descripción es requerida
+          </div>
         </div>
         <div class="col-span-2">
           <label class="block text-base font-medium text-gray-700">Medidas de Seguridad</label>
           <textarea formControlName="securityMeasures" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm" rows="2"></textarea>
+          <div *ngIf="formGroup.get('securityMeasures')?.invalid && formGroup.get('securityMeasures')?.touched" class="text-red-500 text-sm">
+            La medidas de Seguridad es requerida
+          </div>
         </div>
         <div class="col-span-2">
           <label class="block text-base font-medium text-gray-700">Observaciones</label>
           <textarea formControlName="observations" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm" rows="2"></textarea>
+          <div *ngIf="formGroup.get('observations')?.invalid && formGroup.get('observations')?.touched" class="text-red-500 text-sm">
+            La Observaciones es requerida
+          </div>
         </div>
         <div class="col-span-2">
           <label class="block text-base font-medium text-gray-700">Anexos</label>

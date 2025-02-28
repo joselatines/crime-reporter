@@ -128,6 +128,7 @@ export class PoliceReportFormComponent {
         this.resetForms()
       },
       error: (err) => {
+        alert('Por favor, completa todos los campos obligatorios.');
         console.error('Error al crear el reporte:', err);
       }
     })

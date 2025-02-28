@@ -1,11 +1,11 @@
-import { NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-involved-people',
   standalone: true,
-  imports: [ReactiveFormsModule, NgFor, FormsModule],
+  imports: [ReactiveFormsModule, NgFor, NgIf, FormsModule],
   templateUrl: './involved-people.component.html',
   styleUrl: './involved-people.component.css'
 })
