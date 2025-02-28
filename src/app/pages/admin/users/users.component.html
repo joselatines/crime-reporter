@@ -1,1 +1,135 @@
-<p>users works!</p>
+<div class="container mx-auto p-4">
+  <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+    <h1 class="text-2xl font-bold mb-4 text-gray-800">Gestión de Usuarios</h1>
+    
+    <!-- Search Bar -->
+    <div class="mb-6">
+      <mat-form-field  class="w-full">
+        <mat-label>Buscar Usuarios</mat-label>
+        <input matInput [(ngModel)]="searchTerm" (keyup)="applyFilter()" placeholder="Buscar por nombre, correo o rol">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+    
+    <!-- User Form -->
+    <mat-card class="mb-6">
+      <mat-card-header>
+        <mat-card-title>{{ editMode ? 'Editar Usuario' : 'Agregar Nuevo Usuario' }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <mat-form-field >
+            <mat-label>Nombre de Usuario</mat-label>
+            <input matInput formControlName="username" placeholder="Ingrese nombre de usuario">
+            <mat-error *ngIf="userForm.get('username')?.hasError('required')">El nombre de usuario es requerido</mat-error>
+          </mat-form-field>
+          
+          <mat-form-field >
+            <mat-label>Correo Electrónico</mat-label>
+            <input matInput formControlName="email" placeholder="Ingrese correo electrónico" type="email">
+            <mat-error *ngIf="userForm.get('email')?.hasError('required')">El correo electrónico es requerido</mat-error>
+            <mat-error *ngIf="userForm.get('email')?.hasError('email')">Por favor ingrese un correo válido</mat-error>
+          </mat-form-field>
+          
+          <mat-form-field >
+            <mat-label>Contraseña</mat-label>
+            <input matInput formControlName="password" placeholder="Ingrese contraseña" type="password">
+            <mat-hint *ngIf="editMode">Dejar en blanco para mantener la contraseña actual</mat-hint>
+            <mat-error *ngIf="userForm.get('password')?.hasError('required')">La contraseña es requerida</mat-error>
+            <mat-error *ngIf="userForm.get('password')?.hasError('minlength')">La contraseña debe tener al menos 6 caracteres</mat-error>
+          </mat-form-field>
+          
+          <mat-form-field >
+            <mat-label>Rol</mat-label>
+            <mat-select formControlName="role">
+              <mat-option value="detective">Detective</mat-option>
+              <mat-option value="admin">Administrador</mat-option>
+            </mat-select>
+            <mat-error *ngIf="userForm.get('role')?.hasError('required')">El rol es requerido</mat-error>
+          </mat-form-field>
+          
+          <div class="md:col-span-2 flex justify-end gap-2 mt-4">
+            <button 
+              *ngIf="editMode" 
+              type="button" 
+              mat-stroked-button 
+              color="warn" 
+              (click)="cancelEdit()"
+              class="bg-gray-200 hover:bg-gray-300 text-gray-700">
+              Cancelar
+            </button>
+            <button 
+              type="submit" 
+              mat-raised-button 
+              color="primary" 
+              [disabled]="userForm.invalid"
+              class="bg-blue-600 hover:bg-blue-700 text-white border border-blue-600">
+              {{ editMode ? 'Actualizar Usuario' : 'Agregar Usuario' }}
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+    
+    <!-- Users Table -->
+    <div class="overflow-x-auto">
+      <table mat-table [dataSource]="filteredUsers" class="w-full">
+        
+        <!-- Username Column -->
+        <ng-container matColumnDef="username">
+          <th mat-header-cell *matHeaderCellDef class="bg-gray-100 text-gray-800"> Nombre de Usuario </th>
+          <td mat-cell *matCellDef="let user" class="text-gray-700"> {{user.username}} </td>
+        </ng-container>
+        
+        <!-- Email Column -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef class="bg-gray-100 text-gray-800"> Correo Electrónico </th>
+          <td mat-cell *matCellDef="let user" class="text-gray-700"> {{user.email}} </td>
+        </ng-container>
+        
+        <!-- Role Column -->
+        <ng-container matColumnDef="role">
+          <th mat-header-cell *matHeaderCellDef class="bg-gray-100 text-gray-800"> Rol </th>
+          <td mat-cell *matCellDef="let user" class="text-gray-700">
+            <span 
+              [ngClass]="{
+                'bg-blue-100 text-blue-800': user.role === 'detective',
+                'bg-purple-100 text-purple-800': user.role === 'admin'
+              }"
+              class="px-2 py-1 rounded-full text-xs font-medium">
+              {{ user.role === 'detective' ? 'Detective' : 'Administrador' }}
+            </span>
+          </td>
+        </ng-container>
+        
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="bg-gray-100 text-gray-800"> Acciones </th>
+          <td mat-cell *matCellDef="let user" class="text-gray-700">
+            <button 
+              
+              color="primary" 
+              (click)="editUser(user)"
+              class="text-blue-600 hover:text-blue-800 mr-2">
+              Editar
+            </button>
+            <button 
+              color="warn" 
+              (click)="deleteUser(user)"
+              class="text-red-600 hover:text-red-800">
+             Eliminar
+            </button>
+          </td>
+        </ng-container>
+        
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-50"></tr>
+        
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell text-center py-4 text-gray-500" colspan="4">No se encontraron usuarios</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
