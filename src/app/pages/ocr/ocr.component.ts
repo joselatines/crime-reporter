@@ -1,43 +1,56 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import * as Tesseract from 'tesseract.js';
 
 @Component({
   selector: 'app-ocr',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './ocr.component.html',
   styleUrls: ['./ocr.component.css']
 })
 export class OcrComponent {
   imageFile: File | null = null;
-  ocrResult: string = ''; // Variable para almacenar el texto extraído
+  imgURL: string | null = null; // URL para la vista previa
+  ocrResult: string = ''; // Resultado OCR
   loading: boolean = false; // Indicador de carga
 
   uploadImage(event: any) {
-    this.imageFile = event.target.files[0];
-    this.extractText();
+    const file = event.target.files[0];
+    if (file) {
+      this.imageFile = file;
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imgURL = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   extractText() {
-    if (this.imageFile) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        const imageData = e.target.result;
-        this.loading = true; // Iniciar el indicador de carga
+    if (this.imgURL) {
+      this.loading = true;
+      this.ocrResult = ''; // Reiniciar resultado antes de procesar
+      Tesseract.recognize(
+        this.imgURL,
+        'eng',
+        { logger: info => console.log(info) }
+      ).then(({ data: { text } }) => {
+        this.ocrResult = text;
+        this.loading = false;
+      }).catch(err => {
+        console.error("Error OCR:", err);
+        this.loading = false;
+      });
+    }
+  }
 
-        Tesseract.recognize(
-          imageData,
-          'eng', // Cambia el idioma según sea necesario
-          {
-            logger: info => console.log(info) // Para ver el progreso (opcional)
-          }
-        ).then(({ data: { text } }) => {
-          this.ocrResult = text; // Asigna el texto extraído a la variable
-          this.loading = false; // Finalizar el indicador de carga
-        }).catch(err => {
-          console.error("Error durante el reconocimiento:", err);
-          this.loading = false; // Finalizar el indicador de carga en caso de error
-        });
-      };
-      reader.readAsDataURL(this.imageFile);
+  copyText() {
+    if (this.ocrResult) {
+      navigator.clipboard.writeText(this.ocrResult).then(() => {
+        console.log("Texto copiado al portapapeles.");
+      }).catch(err => console.error("Error al copiar texto:", err));
     }
   }
 }
+

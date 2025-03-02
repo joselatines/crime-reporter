@@ -1,15 +1,40 @@
-<div class="container">
+<div class="flex items-center justify-center min-h-screen p-6">
+  <div class="bg-white shadow-lg rounded-lg p-6 max-w-lg w-full">
+    <h1 class="text-2xl font-semibold text-gray-700 text-center">📄 Herramienta OCR</h1>
+    <p class="text-gray-500 text-center mb-4">Carga una imagen para extraer su texto.</p>
 
-  <h1>Herramienta OCR</h1>
+    <!-- Input de archivo -->
+    <label class="flex flex-col items-center justify-center w-full p-4 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition">
+      <span class="text-gray-600">Haz clic o arrastra una imagen</span>
+      <input type="file" (change)="uploadImage($event)" accept="image/*" class="hidden" />
+    </label>
 
-  <p>Selecciona una imagen para extraer el texto.</p>
+    <!-- Vista previa de imagen -->
+    <div *ngIf="imgURL" class="mt-4 flex justify-center">
+      <img [src]="imgURL" alt="Imagen subida" class="max-w-full max-h-52 rounded-lg shadow-md">
+    </div>
 
-  <input type="file" (change)="uploadImage($event)" accept="image/*" class="file-input" />
+    <!-- Botón de extracción -->
+    <button (click)="extractText()" [disabled]="!imgURL || loading"
+      class="w-full mt-4 bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400">
+      {{ loading ? 'Procesando...' : 'Aplicar OCR' }}
+    </button>
 
-  <div * ngIf="ocrResult" class="result-container"></div>
+    <!-- Spinner de carga -->
+    <div *ngIf="loading" class="flex justify-center mt-3">
+      <div class="animate-spin rounded-full h-8 w-8 border-t-4 border-blue-600"></div>
+    </div>
 
-  <div>
-    <p class="extracted-text">{{ ocrResult }}</p>
+    <!-- Resultado OCR -->
+    <div *ngIf="ocrResult" class="mt-4 bg-gray-100 p-4 rounded-lg">
+      <p class="text-gray-700 font-mono whitespace-pre-wrap">{{ ocrResult }}</p>
+
+      <!-- Botón de copiar -->
+      <button (click)="copyText()"
+        class="mt-2 bg-blue-600 text-white py-1 px-3 rounded-lg hover:bg-blue-700 transition">
+        Copiar Texto 
+      </button>
+    </div>
   </div>
-
 </div>
+
