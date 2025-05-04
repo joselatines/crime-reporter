@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -13,6 +12,4 @@ import { Subscription } from 'rxjs';
 export class HeaderComponent {
 
   constructor(public authService: AuthService) { }
-
-
 }

@@ -42,9 +42,22 @@ export class LoginComponent {
         },
         error: (err: any) => {
           this.isLoading = false; // Oculta el loader si ocurre un error
-          this.loginError = err.message || 'Error desconocido'; // Muestra el mensaje de error
-          this.popupMessage = 'Error: ' + this.loginError; // Mostrar error en el popup
+
+          if (err?.error?.message) {
+            // Si el backend envía un mensaje de error específico en el cuerpo de la respuesta
+            this.popupMessage = err.error.message;
+          } else if (err?.status === 500) {
+            // Si el error es un 500 (Internal Server Error)
+            this.popupMessage = 'Ocurrió un error interno en el servidor. Intenta nuevamente más tarde.';
+          } else if (err?.message) {
+            // Si hay un mensaje de error en el objeto 'err'
+            this.popupMessage = err.message;
+          } else {
+            // Si no hay información específica del error
+            this.popupMessage = 'No se pudo iniciar sesión. Verifica tus credenciales e intenta nuevamente.';
+          }
           this.showPopup = true; // Mostrar el popup con el mensaje de error
+
         },
       });
     } else {

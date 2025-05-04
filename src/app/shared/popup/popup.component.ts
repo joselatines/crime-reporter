@@ -15,8 +15,17 @@ export class PopupComponent {
 
   constructor() {}
 
+  ngOnChanges() {
+    if (this.show){
+      setTimeout(() => {
+        this.closePopup.emit();
+      }, 3000);
+    }
+  }
+
   // Método para cerrar el popup
   onClose(): void {
-    this.closePopup.emit();
+    this.show = false; // Cambia la visibilidad del popup
+    this.closePopup.emit(); // Emite el evento para informar el cierre
   }
 }
