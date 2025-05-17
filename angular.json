@@ -29,7 +29,17 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+               "canvg",
+               "tesseract.js",
+               "jspdf-autotable",
+               "html2canvas",
+               "dompurify",
+               "raf",       
+               "rgbcolor",  
+               "core-js"    
+            ] 
           },
           "configurations": {
             "production": {
@@ -39,13 +49,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "allowedCommonJsDependencies": [
-                "canvg",
-                "tesseract.js",
-                "jspdf-autotable",
-                "html2canvas",
-                "dompurify"
-              ],
+              
               "budgets": [
                 {
                   "type": "initial",
