@@ -15,7 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'; // Mantén MatSnackBar y MatSnackBarModule
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
@@ -36,23 +36,23 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 export class UsersComponent implements OnInit {
   // Inyección de dependencias
   private http = inject(HttpClient);
-  private snackBar = inject(MatSnackBar);
+  private snackBar = inject(MatSnackBar); // MatSnackBar se mantiene porque se usa en otras notificaciones
   private fb = inject(FormBuilder);
-  
+
   // API URL
   private apiUrl = environment.apiUrl + '/users';
-  
+
   // Datos
   users: User[] = [];
   filteredUsers: User[] = [];
   searchTerm: string = '';
   displayedColumns: string[] = ['username', 'email', 'role', 'actions'];
-  
+
   // Estado del formulario
   userForm: FormGroup;
   editMode: boolean = false;
   selectedUser: User | null = null;
-  
+
   constructor() {
     this.userForm = this.fb.group({
       username: ['', [Validators.required]],
@@ -71,14 +71,11 @@ export class UsersComponent implements OnInit {
     this.http.get<{message: string, users: User[]}>(this.apiUrl)
       .subscribe({
         next: (response) => {
-          // Handle the response structure from the backend
           if (response.users) {
             this.users = response.users;
           } else if (Array.isArray(response)) {
-            // Fallback in case the response is just an array
             this.users = response;
           } else {
-            // Handle case where response might have users in a different property
             this.users = (response as any).data || [];
           }
           this.filteredUsers = [...this.users];
@@ -111,11 +108,11 @@ export class UsersComponent implements OnInit {
     if (this.userForm.invalid) return;
 
     const userData = this.userForm.value;
-    
+
     if (this.editMode && this.selectedUser) {
       // Actualizar usuario existente
       if (!userData.password) delete userData.password;
-      
+
       this.http.put<{message: string, user: User}>(`${this.apiUrl}/${this.selectedUser._id}`, userData)
         .subscribe({
           next: (response) => {
@@ -131,13 +128,12 @@ export class UsersComponent implements OnInit {
         });
     } else {
       // Crear nuevo usuario
-      alert(this.apiUrl)
       this.http.post<{message: string, user: User}>(this.apiUrl, userData)
         .subscribe({
           next: (response) => {
             console.log('Usuario creado:', response);
             this.loadUsers();
-            //this.resetForm();
+            this.resetForm();
             this.showNotification('Usuario creado exitosamente', 'success');
           },
           error: (err) => {
@@ -152,14 +148,14 @@ export class UsersComponent implements OnInit {
   editUser(user: User): void {
     this.editMode = true;
     this.selectedUser = user;
-    
+
     this.userForm.patchValue({
       username: user.username,
       email: user.email,
       role: user.role,
       password: '' // Limpiar campo de contraseña por seguridad
     });
-    
+
     // Hacer la contraseña opcional en modo edición
     this.userForm.get('password')?.setValidators([Validators.minLength(6)]);
     this.userForm.get('password')?.updateValueAndValidity();
@@ -173,14 +169,28 @@ export class UsersComponent implements OnInit {
           next: (response) => {
             console.log('Usuario eliminado:', response);
             this.loadUsers();
-            this.showNotification('Usuario eliminado exitosamente', 'success');
+            // --- INICIO DE LA SECCIÓN MODIFICADA ---
+            // Aquí se cambia la notificación a un alert() nativo del navegador
+            alert(`Usuario ${user.username} eliminado exitosamente.`);
+            // --- FIN DE LA SECCIÓN MODIFICADA ---
           },
           error: (err) => {
             console.error('Error eliminando usuario:', err);
-            this.showNotification('Error al eliminar usuario', 'error');
+            // Si quieres un alert para el error de eliminación, puedes ponerlo aquí también
+            alert(`Error al eliminar usuario ${user.username}.`);
           }
         });
     }
+  }
+
+  // Mostrar notificación (esta función seguirá usando MatSnackBar para otras operaciones como crear/actualizar)
+  showNotification(message: string, type: 'success' | 'error'): void {
+    this.snackBar.open(message, 'Cerrar', {
+      duration: 3000,
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: type === 'success' ? ['bg-green-500', 'text-white'] : ['bg-red-500', 'text-white']
+    });
   }
 
   // Resetear formulario
@@ -188,7 +198,7 @@ export class UsersComponent implements OnInit {
     this.userForm.reset({ role: 'detective' });
     this.editMode = false;
     this.selectedUser = null;
-    
+
     // Restablecer validación de contraseña a requerida
     this.userForm.get('password')?.setValidators([Validators.required, Validators.minLength(6)]);
     this.userForm.get('password')?.updateValueAndValidity();
@@ -197,15 +207,5 @@ export class UsersComponent implements OnInit {
   // Cancelar edición
   cancelEdit(): void {
     this.resetForm();
-  }
-
-  // Mostrar notificación
-  showNotification(message: string, type: 'success' | 'error'): void {
-    this.snackBar.open(message, 'Cerrar', {
-      duration: 3000,
-      horizontalPosition: 'end',
-      verticalPosition: 'top',
-      panelClass: type === 'success' ? ['bg-green-500', 'text-white'] : ['bg-red-500', 'text-white']
-    });
   }
 }

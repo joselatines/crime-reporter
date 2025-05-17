@@ -7,4 +7,67 @@ body {
     font-family: "Source Sans 3", serif;
     background: #ece8e8;
 }
+/* Si este es el único código que "funciona" para otras cosas, déjalo, pero el mat-select seguirá siendo un desafío. */
+.cdk-overlay-pane {
+  position: fixed !important; /* Usa 'fixed' para posicionamiento respecto al viewport */
+  top: 50% !important; /* Intenta centrarlo verticalmente */
+  left: 50% !important; /* Intenta centrarlo horizontalmente */
+  transform: translate(-50%, -50%) !important; /* Centra el elemento en el 50% de su propio tamaño */
+  display: flex !important; /* Asegura que el contenido dentro del overlay se centre si es un flex-item */
+  max-width: 100vw !important; /* Evita que el overlay se desborde del ancho del viewport */
+  max-height: 100vh !important; /* Evita que el overlay se desborde del alto del viewport */
+  pointer-events: auto !important; /* Asegura que el overlay sea interactuable (reciba clics, etc.) */
+  opacity: 1 !important; /* Asegura que el overlay sea completamente visible */
+  z-index: 1000 !important; /* Asegura que esté por encima de otros elementos en la página */
+}
 
+/* ¡¡ESTA ES LA CLAVE!! */
+/* Eliminamos todas las propiedades de posicionamiento que forzaban al overlay a estar fijo. */
+/* Al quitar 'position', 'top', 'left', 'transform' y 'display: flex', permitimos que Angular Material */
+/* maneje el posicionamiento de forma nativa, haciendo que el select se despliegue junto a su input. */
+.cdk-overlay-pane {
+  opacity: 1 !important; /* Asegura que sea completamente visible */
+  pointer-events: auto !important; /* Asegura que el overlay sea interactuable */
+  z-index: 1000 !important; /* Asegura que esté por encima de otros elementos */
+  max-width: 100vw !important; /* Evita desbordamiento horizontal */
+  max-height: 100vh !important; /* Evita desbordamiento vertical */
+  
+  /* ¡ELIMINA O COMENTA ESTAS PROPIEDADES SI ESTÁN AQUÍ! */
+  /* position: fixed !important; */
+  /* top: 50% !important; */
+  /* left: 50% !important; */
+  /* transform: translate(-50%, -50%) !important; */
+  /* display: flex !important; */
+}
+
+/* Específico para el panel de opciones de mat-select */
+/* Forzamos el color de fondo y la sombra para evitar la transparencia. */
+.mat-mdc-select-panel {
+  background-color: white !important; /* Fuerza el fondo blanco */
+  box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 
+              0px 8px 10px 1px rgba(0, 0, 0, 0.14), 
+              0px 3px 14px 2px rgba(0, 0, 0, 0.12) !important; /* Sombra de Material UI */
+  border-radius: 4px !important; /* Bordes redondeados */
+
+  /* Asegura que no haya transformaciones o márgenes raros que lo muevan */
+  /* Estos son redundantes si cdk-overlay-pane está limpio, pero no hacen daño */
+  transform: none !important; 
+  margin-top: 0 !important;
+  margin-left: 0 !important; 
+  max-width: unset !important; /* Permite que el panel del select tenga su ancho natural */
+  /* z-index: 1001 !important; * Si el panel sigue apareciendo debajo de algo */
+}
+
+/* Opcional: Asegurar que las opciones dentro del select sean visibles */
+.mat-mdc-option {
+  color: rgba(0, 0, 0, 0.87) !important; /* Color de texto por defecto de Material */
+  background-color: transparent !important; /* Asegurar que no haya un fondo inesperado */
+} /* <-- Asegúrate de que esta llave de cierre esté ahí */
+
+.mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) {
+  background-color: rgba(0, 0, 0, 0.04) !important; /* Un ligero fondo para la opción seleccionada */
+} /* <-- Y esta también */
+
+.mat-mdc-option:hover:not(.mdc-list-item--disabled) {
+  background-color: rgba(0, 0, 0, 0.04) !important; /* Estilo hover */
+} /* <-- ¡Y que esta también esté presente y correcta! */
