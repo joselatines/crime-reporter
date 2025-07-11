@@ -32,8 +32,24 @@
       <!-- Botón de copiar -->
       <button (click)="copyText()"
         class="mt-2 bg-blue-600 text-white py-1 px-3 rounded-lg hover:bg-blue-700 transition">
-        Copiar Texto 
+        Copiar Texto
       </button>
+    </div>
+
+    <!-- Historial OCR -->
+    <div *ngIf="ocrHistory.length" class="mt-8">
+      <h2 class="text-lg font-semibold mb-2">Historial de OCR</h2>
+      <ul class="max-h-48 overflow-y-auto">
+        <li *ngFor="let item of ocrHistory" class="mb-2 p-2 bg-gray-50 rounded border">
+          <span class="block text-xs text-gray-500 mb-1">{{ item.createdAt | date:'short' }}</span>
+          <span class="block font-mono whitespace-pre-wrap">{{ item.text }}</span>
+          <div *ngIf="item.img" class="mt-2">
+            <button (click)="downloadImage(item.img, item._id)" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-700">
+              Descargar Imagen
+            </button>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 </div>
