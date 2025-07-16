@@ -11,16 +11,21 @@
     </span>
     <div class="flex flex-col overflow-x-auto">
         <h1 class="text-center text-4xl font-bold uppercase mx-auto py-6">Indicadores de Violencia en Venezuela</h1>
-    
+
         <div [ngClass]="{'bg-white': !isLoading}" class=" p-10 rounded-lg">
-            <iframe 
+            <iframe
             src="https://www.google.com/maps/d/embed?mid=1ltm8MHbk1D0GTqjt5SccW_HOlqZ5SZQ&ehbc=2E312F"
-                (load)="onIframeMapLoad()" 
+                (load)="onIframeMapLoad()"
                 (error)="onIframeMapError()"
-                width="1024" 
+                width="1024"
                 height="768">
             </iframe>
-            <i [ngClass]="{'bg-white block text-center mt-2 text-xs': !isLoading, 'hidden': isLoading }">Obtenido del Observatorio Venezolano de Violencia (OVV)</i>
+              <i [ngClass]="{'bg-white block text-center mt-2 text-xs': !isLoading, 'hidden': isLoading }">
+                Fuente:
+                <a href="https://observatoriodeviolencia.org.ve/" target="_blank" class="underline text-blue-700 hover:text-blue-900">
+                  Observatorio Venezolano de Violencia (OVV)
+                </a>
+              </i>
         </div>
     </div>
 </div>
