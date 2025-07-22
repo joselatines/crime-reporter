@@ -26,8 +26,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: #1e40af; /* Azul oscuro */
-    color: white;
+    background-color: #1d294d; /* Azul oscuro */
+    color: #fefefe;
     border-radius: 12px;
     padding: 16px;
     text-align: center;
@@ -39,7 +39,7 @@
   }
   
   .tool-button:hover {
-    background-color: #1d4ed8; /* Azul más claro */
+    background-color: #2a365a; /* Azul más claro */
     transform: scale(1.05);
   }
   

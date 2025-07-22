@@ -1,36 +1,45 @@
-<!-- entrevistado.component.html -->
 <div [formGroup]="formGroup">
-  <div class="mb-6 border-b pb-4">
-    <h4 class="text-lg font-bold text-blue-800 mb-4">DATOS DEL ENTREVISTADO</h4>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="border-b border-slate-200 pb-6 mb-6">
+    <h4 class="text-lg font-semibold text-[#202c4c] mb-4">DATOS DEL ENTREVISTADO</h4>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+      
       <div>
-        <label class="block text-sm font-medium text-gray-700">Nombre</label>
-        <input formControlName="nombre" class="w-full p-2 border rounded-md" placeholder="Nombre Completo">
-        <div *ngIf="formGroup.get('nombre')?.invalid && formGroup.get('nombre')?.touched" class="text-red-500 text-sm">
-          El nombre es requerido
+        <label for="entrevistado-nombre" class="block text-sm font-medium text-gray-600 mb-1">Nombre Completo</label>
+        <input id="entrevistado-nombre" formControlName="nombre" placeholder="Ingrese el nombre completo"
+               class="block w-full bg-slate-100 border-transparent rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#202c4c]">
+        <div *ngIf="formGroup.get('nombre')?.invalid && formGroup.get('nombre')?.touched" class="text-red-600 text-sm mt-1">
+          El nombre es requerido.
         </div>
       </div>
+
       <div>
-        <label class="block text-sm font-medium text-gray-700">Cédula</label>
-        <input type="text" maxlength="10" formControlName="cedula" appCedulaFormat class="w-full p-2 border rounded-md" placeholder="Cédula (V-XX.XXX.XXX)">
-        <div *ngIf="formGroup.get('cedula')?.invalid && formGroup.get('cedula')?.touched" class="text-red-500 text-sm">
-          La cédula es requerida
+        <label for="entrevistado-cedula" class="block text-sm font-medium text-gray-600 mb-1">Cédula</label>
+        <input id="entrevistado-cedula" type="text" maxlength="10" formControlName="cedula" appCedulaFormat placeholder="V-00.000.000"
+               class="block w-full bg-slate-100 border-transparent rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#202c4c]">
+        <div *ngIf="formGroup.get('cedula')?.invalid && formGroup.get('cedula')?.touched" class="text-red-600 text-sm mt-1">
+          La cédula es requerida.
         </div>
       </div>
+
       <div>
-        <label class="block text-sm font-medium text-gray-700">Edad</label>
-        <input type="number" formControlName="edad" class="w-full p-2 border rounded-md" placeholder="Edad">
-        <div *ngIf="formGroup.get('edad')?.invalid && formGroup.get('edad')?.touched" class="text-red-500 text-sm">
-          La edad es requerida
+        <label for="entrevistado-edad" class="block text-sm font-medium text-gray-600 mb-1">Edad</label>
+        <input id="entrevistado-edad" type="number" formControlName="edad" placeholder="Ingrese la edad"
+               class="block w-full bg-slate-100 border-transparent rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#202c4c]">
+        <div *ngIf="formGroup.get('edad')?.invalid && formGroup.get('edad')?.touched" class="text-red-600 text-sm mt-1">
+          La edad es requerida.
         </div>
       </div>
+
       <div>
-        <label class="block text-sm font-medium text-gray-700">Profesión</label>
-        <input formControlName="profesion" class="w-full p-2 border rounded-md" placeholder="Profesión">
-        <div *ngIf="formGroup.get('profesion')?.invalid && formGroup.get('profesion')?.touched" class="text-red-500 text-sm">
-          La profesión es requerida
+        <label for="entrevistado-profesion" class="block text-sm font-medium text-gray-600 mb-1">Profesión / Ocupación</label>
+        <input id="entrevistado-profesion" formControlName="profesion" placeholder="Ingrese la profesión u ocupación"
+               class="block w-full bg-slate-100 border-transparent rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#202c4c]">
+        <div *ngIf="formGroup.get('profesion')?.invalid && formGroup.get('profesion')?.touched" class="text-red-600 text-sm mt-1">
+          La profesión es requerida.
         </div>
       </div>
+      
     </div>
   </div>
 </div>

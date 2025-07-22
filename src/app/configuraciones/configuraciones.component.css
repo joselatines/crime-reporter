@@ -5,7 +5,7 @@
 }
 
 h1 {
-  color: #333;
+  color: #252d44;
   margin-bottom: 20px;
 }
 
@@ -42,7 +42,7 @@ label {
 }
 
 .btn-submit {
-  background-color: #007bff;
+  background-color: #1d294d;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -50,10 +50,12 @@ label {
   cursor: pointer;
   font-size: 16px;
   transition: background-color 0.3s;
+  display: block;
+  margin: 0 auto;
 }
 
 .btn-submit:hover {
-  background-color: #0069d9;
+  background-color: #2a365a;
 }
 
 .btn-submit:disabled {
