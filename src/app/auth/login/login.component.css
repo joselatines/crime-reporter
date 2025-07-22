@@ -94,7 +94,7 @@ input.invalid {
 button {
   width: 100%;
   padding: 12px;
-  background-color: #0659a4;
+  background-color: #252d49;
   font-weight: bold;
   color: white;
   border: none;
@@ -110,7 +110,7 @@ button:disabled {
 }
 
 button:hover:not(:disabled) {
-  background-color: #3078b8;
+  background-color: #2c3557;
 }
 
 /* Estilos para el estado de carga */

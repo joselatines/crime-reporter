@@ -27,9 +27,12 @@
       (addEvidence)="addEvidence()">
     </app-evidence-list> -->
 
-    <button (click)="onSubmit()" [disabled]="!incidentForm.valid" 
-    class="bg-blue-police hover:bg-blueHover-police text-white py-4 rounded-md">
-      Generar Reporte Policial
-    </button>
+<button 
+  (click)="onSubmit()" 
+  [disabled]="!incidentForm.valid"
+  class="w-full sm:w-auto bg-[#202c4c] hover:bg-[#1a1f36] text-white font-semibold text-base px-6 py-3 rounded-lg shadow-md transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+>
+  Generar Reporte Policial
+</button>
   </div>
 </div>
