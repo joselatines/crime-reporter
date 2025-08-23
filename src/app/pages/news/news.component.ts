@@ -1,11 +1,17 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { FormsModule } from '@angular/forms';
 import { Comment } from '../../../lib/types/comment';
 import { AuthService } from '../../services/auth/auth.service';
 import { User } from '../../../lib/types/user';
+import { timer, Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+
+// Es una buena práctica crear un servicio para las peticiones HTTP, pero
+// para este ejemplo, las integramos directamente en el componente.
+// En una aplicación más grande, se recomendaría un 'ScrapingService'.
 
 @Component({
   selector: 'app-news',
@@ -14,14 +20,17 @@ import { User } from '../../../lib/types/user';
   templateUrl: './news.component.html',
   styleUrls: ['./news.component.css']
 })
-export class NewsComponent implements OnInit {
+export class NewsComponent implements OnInit, OnDestroy {
+  // Inyección de dependencias
   httpClient = inject(HttpClient);
   authService = inject(AuthService);
+
+  // Propiedades del componente
   currentUser: User | null = null;
   data: any[] = [];
   error: string | null = null;
   isLoading: boolean = false;
-  isUpdating: boolean = false; // Nueva propiedad para controlar el estado de actualización
+  isUpdating: boolean = false;
   placeholders: number[] = [1, 2, 3, 4];
 
   newsSources = [
@@ -34,6 +43,9 @@ export class NewsComponent implements OnInit {
   commentAuthor: string = 'Usuario';
   apiUrl = environment.apiUrl;
 
+  // Propiedad para gestionar la suscripción al poller y evitar fugas de memoria
+  private statusSubscription: Subscription | undefined;
+
   ngOnInit(): void {
     this.isLoading = true;
     this.currentUser = this.authService.currentUserValue;
@@ -42,23 +54,20 @@ export class NewsComponent implements OnInit {
 
     if (this.currentUser?._id) {
       console.log(`Fetching settings for user: ${this.currentUser.username} (${this.currentUser._id})`);
-
       this.httpClient.get(`${this.apiUrl}/users/${this.currentUser._id}`)
         .subscribe({
           next: (response: any) => {
             console.log('User settings retrieved:', response);
             if (response.user?.settings?.sourceWebsitesToScrape) {
               console.log('Found saved news sources:', response.user.settings.sourceWebsitesToScrape);
-              if (response.user.settings.sourceWebsitesToScrape) {
-                this.newsSources.forEach(source => {
-                  source.selected = response.user.settings.sourceWebsitesToScrape.includes(source.value);
-                })
-              }
-              this.updateNewsSourcesSelection(response.user.settings.sourceWebsitesToScrape);
+              this.newsSources.forEach(source => {
+                source.selected = response.user.settings.sourceWebsitesToScrape.includes(source.value);
+              });
+              this.fetchNewsBasedOnSelection();
             } else {
               console.log('No saved news sources found, using defaults');
+              this.fetchNewsBasedOnSelection();
             }
-            this.fetchNewsBasedOnSelection();
           },
           error: (err) => {
             console.error('Error fetching user settings:', err);
@@ -68,6 +77,28 @@ export class NewsComponent implements OnInit {
     } else {
       console.log('No user logged in, using default news sources');
       this.fetchNewsBasedOnSelection();
+    }
+
+    // Inicia el poller para consultar el estado del scraping en el backend cada 5 segundos
+    this.statusSubscription = timer(0, 5000)
+      .pipe(
+        switchMap(() => this.httpClient.get<{ isRunning: boolean }>(`${this.apiUrl}/status`))
+      )
+      .subscribe({
+        next: (response) => {
+          this.isUpdating = response.isRunning;
+        },
+        error: (err) => {
+          console.error('Error fetching scraping status:', err);
+          this.isUpdating = false;
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    // Es crucial desuscribirse para evitar fugas de memoria cuando el componente se destruye
+    if (this.statusSubscription) {
+      this.statusSubscription.unsubscribe();
     }
   }
 
@@ -93,7 +124,7 @@ export class NewsComponent implements OnInit {
 
   fetchData(selectedSources: string[] = []): void {
     this.isLoading = true;
-    let url = `${this.apiUrl}/news`
+    let url = `${this.apiUrl}/news`;
 
     if (selectedSources.length > 0) {
       const sourcesParam = selectedSources.join(',');
@@ -106,12 +137,10 @@ export class NewsComponent implements OnInit {
         next: (response: any) => {
           if (Array.isArray(response.data)) {
             this.isLoading = false;
-            this.isUpdating = false; // Resetear el estado de actualización
             console.log(`Received ${response.data.length} news items`);
             this.data = response.data.map((noticia: any) => {
               return { ...noticia, comments: [] };
             });
-
             this.data.forEach((noticia, index) => {
               this.fetchCommentsForNews(noticia._id, index);
             });
@@ -119,71 +148,55 @@ export class NewsComponent implements OnInit {
             this.error = "El servidor no retornó un array válido.";
             console.error("Respuesta no válida:", response);
             this.isLoading = false;
-            this.isUpdating = false;
           }
         },
         error: (err: any) => {
           this.isLoading = false;
-          this.isUpdating = false;
           this.error = "Hubo un error al obtener las noticias.";
           console.error("Error en la solicitud:", err);
         },
       });
   }
 
-  // Método actualizado para manejar la actualización de noticias
-  async updateNews(): Promise<void> {
-    if (this.isUpdating) {
-      this.showUpdateAlert();
-      return;
-    }
-
-    this.isUpdating = true;
-    this.isLoading = true;
-    
+  updateNews(): void {
     const selectedSources = this.newsSources
       .filter(source => source.selected)
       .map(source => source.value);
 
-    console.log('Updating news with selected sources:', selectedSources);
+    // Llama al endpoint del backend para iniciar el proceso de scraping
+    this.httpClient.get(`${this.apiUrl}/`)
+      .subscribe({
+        next: (response: any) => {
+          console.log('Scraping iniciado en el backend:', response.message);
+          // No se necesita actualizar isUpdating aquí, el poller de ngOnInit lo hará automáticamente
+          this.isLoading = true;
+        },
+        error: (err) => {
+          console.error('Error al iniciar el scraping:', err);
+          // Si hay un error, el poller se encargará de resetear el estado isUpdating
+          this.isLoading = false;
+        }
+      });
 
-    try {
-      if (this.currentUser?._id) {
-        console.log(`Saving news source preferences for user: ${this.currentUser.username}`);
-        const updateData = {
-          settings: {
-            sourceWebsitesToScrape: selectedSources
-          }
-        };
+    // Guardar las preferencias del usuario si está autenticado
+    if (this.currentUser?._id) {
+      console.log(`Saving news source preferences for user: ${this.currentUser.username}`);
+      const updateData = {
+        settings: {
+          sourceWebsitesToScrape: selectedSources
+        }
+      };
 
-        await this.httpClient.put(`${this.apiUrl}/users/${this.currentUser._id}`, updateData)
-          .toPromise()
-          .then((response) => {
+      this.httpClient.put(`${this.apiUrl}/users/${this.currentUser._id}`, updateData)
+        .subscribe({
+          next: (response) => {
             console.log('User preferences saved successfully:', response);
-          })
-          .catch((err) => {
+          },
+          error: (err) => {
             console.error('Error updating user settings:', err);
-          });
-      }
-
-      await this.fetchDataAsync(selectedSources);
-    } catch (error) {
-      console.error('Error updating news:', error);
-      this.isLoading = false;
-      this.isUpdating = false;
+          }
+        });
     }
-  }
-
-  private async fetchDataAsync(selectedSources: string[]): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.fetchData(selectedSources);
-      // Asumimos que fetchData manejará el estado de isLoading/isUpdating
-      resolve();
-    });
-  }
-
-  private showUpdateAlert(): void {
-    alert('Estamos actualizando las noticias para ti. Por favor, espera un momento...');
   }
 
   toggleCommentInput(index: number): void {
