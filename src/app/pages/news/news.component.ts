@@ -82,7 +82,7 @@ export class NewsComponent implements OnInit, OnDestroy {
     // Inicia el poller para consultar el estado del scraping en el backend cada 5 segundos
     this.statusSubscription = timer(0, 5000)
       .pipe(
-        switchMap(() => this.httpClient.get<{ isRunning: boolean }>(`${this.apiUrl}/status`))
+        switchMap(() => this.httpClient.get<{ isRunning: boolean }>(`${this.apiUrl}/scrapings/status`))
       )
       .subscribe({
         next: (response) => {
