@@ -1,104 +1,208 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing'; // Para simular peticiones HTTP
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { NewsComponent } from './news.component';
-import { FormsModule } from '@angular/forms'; // Importa FormsModule para ngModel
+import { FormsModule } from '@angular/forms';
+import { environment } from '../../../environments/environment';
 
 describe('NewsComponent', () => {
   let component: NewsComponent;
   let fixture: ComponentFixture<NewsComponent>;
+  let httpMock: HttpTestingController;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NewsComponent, HttpClientTestingModule, FormsModule] // Agrega HttpClientTestingModule y FormsModule
-    })
-    .compileComponents();
+      imports: [NewsComponent, HttpClientTestingModule, FormsModule]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(NewsComponent);
     component = fixture.componentInstance;
+    httpMock = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    httpMock.verify(); // Verifica que no hayan solicitudes HTTP pendientes
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize with isLoading as true', () => {
+  it('should initialize with correct default values', () => {
     expect(component.isLoading).toBeTrue();
-  });
-
-  it('should initialize with empty data and placeholders', () => {
+    expect(component.isUpdating).toBeFalse();
     expect(component.data).toEqual([]);
     expect(component.placeholders).toEqual([1, 2, 3, 4]);
-  });
-
-  it('should toggle comment input visibility', () => {
-    // Simula que no hay ningún input visible inicialmente
-    expect(component.showCommentInput).toBeNull();
-
-    // Llama al método para mostrar el input en la primera noticia (índice 0)
-    component.toggleCommentInput(0);
-    expect(component.showCommentInput).toBe(0);
-
-    // Llama al método nuevamente para ocultar el input
-    component.toggleCommentInput(0);
     expect(component.showCommentInput).toBeNull();
   });
 
-  it('should add a comment to a news item', () => {
-    // Simula una noticia en el array de datos
-    component.data = [
-      {
-        imgUrl: 'https://example.com/image.jpg',
-        title: 'Noticia de prueba',
-        description: 'Descripción de prueba',
-        link: 'https://example.com',
-        comments: [] // Inicializa el array de comentarios vacío
-      }
-    ];
+  describe('toggleCommentInput', () => {
+    it('should toggle comment input visibility', () => {
+      expect(component.showCommentInput).toBeNull();
 
-    // Simula que el input de comentario está visible para la primera noticia (índice 0)
-    component.showCommentInput = 0;
-    component.newComment = 'Este es un comentario de prueba';
+      component.toggleCommentInput(0);
+      expect(component.showCommentInput).toBe(0);
 
-    // Llama al método para agregar el comentario
-    component.addComment(0);
+      component.toggleCommentInput(0);
+      expect(component.showCommentInput).toBeNull();
+    });
 
-    // Verifica que el comentario se haya agregado correctamente
-    expect(component.data[0].comments).toEqual(['Este es un comentario de prueba']);
-    expect(component.newComment).toBe(''); // Verifica que el input se haya limpiado
-    expect(component.showCommentInput).toBeNull(); // Verifica que el input se haya ocultado
+    it('should clear newComment when toggling', () => {
+      component.newComment = 'Test comment';
+      component.toggleCommentInput(0);
+      expect(component.newComment).toBe('');
+    });
   });
 
-  it('should not add an empty comment', () => {
-    // Simula una noticia en el array de datos
-    component.data = [
-      {
+  describe('addComment', () => {
+    beforeEach(() => {
+      component.data = [{
+        _id: '1',
         imgUrl: 'https://example.com/image.jpg',
-        title: 'Noticia de prueba',
-        description: 'Descripción de prueba',
-        link: 'https://example.com',
-        comments: [] // Inicializa el array de comentarios vacío
-      }
-    ];
+        title: 'Test News',
+        description: 'Test Description',
+        comments: []
+      } as any];
+      component.showCommentInput = 0;
+    });
 
-    // Simula que el input de comentario está visible para la primera noticia (índice 0)
-    component.showCommentInput = 0;
-    component.newComment = ''; // Comentario vacío
+    it('should not add an empty comment', () => {
+      component.newComment = '';
+      component.addComment(0);
+      expect(component.data[0].comments.length).toBe(0);
+    });
 
-    // Llama al método para agregar el comentario
-    component.addComment(0);
+    it('should make HTTP POST request when adding a valid comment', () => {
+      component.newComment = 'Test comment';
+      component.addComment(0);
 
-    // Verifica que no se haya agregado ningún comentario
-    expect(component.data[0].comments).toEqual([]);
+      const req = httpMock.expectOne(`${environment.apiUrl}/comments`);
+      expect(req.request.method).toBe('POST');
+      req.flush({ message: 'Success', data: { _id: '1', content: 'Test comment', author: 'Usuario' } });
+
+      expect(component.data[0].comments.length).toBe(1);
+      expect(component.newComment).toBe('');
+      expect(component.showCommentInput).toBeNull();
+    });
   });
 
-  it('should handle fetchData error', () => {
-    // Simula un error en la solicitud HTTP
-    spyOn(component.httpClient, 'get').and.throwError('Error de prueba');
-    component.fetchData();
+  describe('updateNews', () => {
+    it('should set isUpdating and isLoading to true when called', fakeAsync(() => {
+      component.updateNews();
+      expect(component.isUpdating).toBeTrue();
+      expect(component.isLoading).toBeTrue();
 
-    // Verifica que isLoading sea false y que se haya establecido un mensaje de error
-    expect(component.isLoading).toBeFalse();
-    expect(component.error).toBe('Hubo un error al obtener las noticias.');
+      // Simula el paso del tiempo para el finally
+      tick();
+    }));
+
+    // CORRECCIÓN: Se prueba el efecto (la alerta) en lugar del método privado
+    it('should call window.alert if already updating', () => {
+      component.isUpdating = true;
+      spyOn(window, 'alert'); 
+      
+      component.updateNews();
+      
+      expect(window.alert).toHaveBeenCalledWith('Estamos actualizando las noticias para ti. Por favor, espera un momento...');
+    });
+
+    it('should make HTTP requests for logged in user', fakeAsync(() => {
+      component.currentUser = { _id: '123', username: 'testuser' } as any;
+      component.newsSources[0].selected = true;
+      
+      component.updateNews();
+      tick();
+
+      const userReq = httpMock.expectOne(`${environment.apiUrl}/users/123`);
+      expect(userReq.request.method).toBe('PUT');
+      userReq.flush({});
+
+      const newsReq = httpMock.expectOne(`${environment.apiUrl}/news?sources=ultimasnoticias.com.ve`);
+      expect(newsReq.request.method).toBe('GET');
+      newsReq.flush({ data: [] });
+    }));
+
+    it('should handle errors during update', fakeAsync(() => {
+      spyOn(console, 'error');
+      component.updateNews();
+      tick();
+
+      httpMock.expectOne(`${environment.apiUrl}/news`).error(new ProgressEvent('error'));
+      
+      expect(component.isLoading).toBeFalse();
+      expect(component.isUpdating).toBeFalse();
+      expect(console.error).toHaveBeenCalled();
+    }));
+  });
+
+  describe('fetchData', () => {
+    it('should fetch news without sources when none selected', () => {
+      component.fetchData();
+      
+      const req = httpMock.expectOne(`${environment.apiUrl}/news`);
+      expect(req.request.method).toBe('GET');
+      req.flush({ data: [] });
+
+      expect(component.isLoading).toBeFalse();
+      expect(component.isUpdating).toBeFalse();
+    });
+
+    it('should fetch news with selected sources', () => {
+      component.fetchData(['source1', 'source2']);
+      
+      const req = httpMock.expectOne(`${environment.apiUrl}/news?sources=source1,source2`);
+      expect(req.request.method).toBe('GET');
+      req.flush({ data: [] });
+
+      expect(component.isLoading).toBeFalse();
+      expect(component.isUpdating).toBeFalse();
+    });
+
+    it('should handle fetch error', () => {
+      spyOn(console, 'error');
+      component.fetchData();
+
+      httpMock.expectOne(`${environment.apiUrl}/news`).error(new ProgressEvent('error'));
+      
+      expect(component.isLoading).toBeFalse();
+      expect(component.error).toBe('Hubo un error al obtener las noticias.');
+      expect(console.error).toHaveBeenCalled();
+    });
+  });
+
+  // CORRECCIÓN: El método privado no se puede probar directamente. 
+  // La prueba ya se cubrió en 'updateNews' al espiar window.alert. 
+  // Este bloque se podría eliminar, pero si quieres mantenerlo, 
+  // así es como se haría de forma indirecta:
+  describe('showUpdateAlert', () => {
+    it('should show an alert when called by another method', () => {
+      spyOn(window, 'alert');
+      // No puedes llamar a component.showUpdateAlert()
+      // En su lugar, debes llamar a un método público que lo use.
+      // Por ejemplo, si el código tiene un método público que llama al privado:
+      // component.somePublicMethodThatCallsThePrivateOne();
+      // O, como en tu caso, simulas la condición para que `updateNews` lo invoque.
+      component.isUpdating = true;
+      component.updateNews();
+      expect(window.alert).toHaveBeenCalledWith('Estamos actualizando las noticias para ti. Por favor, espera un momento...');
+    });
+  });
+
+  describe('deleteComment', () => {
+    it('should make DELETE request and remove comment', () => {
+      component.data = [{
+        _id: '1',
+        comments: [{ _id: 'comment1' } as any, { _id: 'comment2' } as any]
+      } as any];
+
+      component.deleteComment(0, 'comment1');
+      
+      const req = httpMock.expectOne(`${environment.apiUrl}/comments/comment1`);
+      expect(req.request.method).toBe('DELETE');
+      req.flush({});
+
+      expect(component.data[0].comments.length).toBe(1);
+      expect(component.data[0].comments[0]._id).toBe('comment2');
+    });
   });
 });

@@ -2,7 +2,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, inject, OnInit } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { FormsModule } from '@angular/forms'; // Importa FormsModule para usar ngModel
+import { FormsModule } from '@angular/forms';
 import { Comment } from '../../../lib/types/comment';
 import { AuthService } from '../../services/auth/auth.service';
 import { User } from '../../../lib/types/user';
@@ -10,9 +10,9 @@ import { User } from '../../../lib/types/user';
 @Component({
   selector: 'app-news',
   standalone: true,
-  imports: [CommonModule, FormsModule, DatePipe], // Agrega DatePipe para formatear fechas
+  imports: [CommonModule, FormsModule, DatePipe],
   templateUrl: './news.component.html',
-  styleUrls: ['./news.component.css'] // Corrección aquí (debe ser styleUrls en plural)
+  styleUrls: ['./news.component.css']
 })
 export class NewsComponent implements OnInit {
   httpClient = inject(HttpClient);
@@ -21,18 +21,17 @@ export class NewsComponent implements OnInit {
   data: any[] = [];
   error: string | null = null;
   isLoading: boolean = false;
+  isUpdating: boolean = false; // Nueva propiedad para controlar el estado de actualización
   placeholders: number[] = [1, 2, 3, 4];
 
-
-  // Fuentes de noticias
   newsSources = [
     { name: 'Últimas Noticias', value: 'ultimasnoticias.com.ve', selected: false },
     { name: 'El Nacional', value: 'elnacional.com', selected: false },
     { name: 'NTN24', value: 'ntn24.com', selected: false }
   ];
-  showCommentInput: number | null = null; // Índice de la noticia que muestra el input de comentario
-  newComment: string = ''; // Nuevo comentario
-  commentAuthor: string = 'Usuario'; // Autor del comentario (podría venir de un servicio de autenticación)
+  showCommentInput: number | null = null;
+  newComment: string = '';
+  commentAuthor: string = 'Usuario';
   apiUrl = environment.apiUrl;
 
   ngOnInit(): void {
@@ -44,8 +43,6 @@ export class NewsComponent implements OnInit {
     if (this.currentUser?._id) {
       console.log(`Fetching settings for user: ${this.currentUser.username} (${this.currentUser._id})`);
 
-
-      // Fetch user settings from API
       this.httpClient.get(`${this.apiUrl}/users/${this.currentUser._id}`)
         .subscribe({
           next: (response: any) => {
@@ -65,17 +62,15 @@ export class NewsComponent implements OnInit {
           },
           error: (err) => {
             console.error('Error fetching user settings:', err);
-            console.log('Falling back to default news sources');
-            this.fetchNewsBasedOnSelection(); // Still fetch news with default settings
+            this.fetchNewsBasedOnSelection();
           }
         });
     } else {
       console.log('No user logged in, using default news sources');
-      this.fetchNewsBasedOnSelection(); // No user logged in, fetch with default settings
+      this.fetchNewsBasedOnSelection();
     }
   }
 
-  // Update news sources checkboxes based on user settings
   updateNewsSourcesSelection(sources: string[]): void {
     console.log('Updating news source selection with:', sources);
     this.newsSources.forEach(source => {
@@ -88,16 +83,14 @@ export class NewsComponent implements OnInit {
     console.log('Updated news sources:', this.newsSources.map(s => ({ name: s.name, selected: s.selected })));
   }
 
-  // Helper method to determine which news to fetch based on selected sources
   fetchNewsBasedOnSelection(): void {
     const selectedSources = this.newsSources
       .filter(source => source.selected)
       .map(source => source.value);
 
-    this.fetchData(selectedSources); // Call fetchData with selected sources
+    this.fetchData(selectedSources);
   }
 
-  // Método para obtener noticias sin filtro
   fetchData(selectedSources: string[] = []): void {
     this.isLoading = true;
     let url = `${this.apiUrl}/news`
@@ -106,8 +99,6 @@ export class NewsComponent implements OnInit {
       const sourcesParam = selectedSources.join(',');
       url = `${this.apiUrl}/news?sources=${sourcesParam}`;
       console.log(`Fetching news from URL: ${url}`);
-    } else {
-      console.log('No specific sources selected, fetching all news from:', url);
     }
 
     this.httpClient.get(url)
@@ -115,120 +106,95 @@ export class NewsComponent implements OnInit {
         next: (response: any) => {
           if (Array.isArray(response.data)) {
             this.isLoading = false;
+            this.isUpdating = false; // Resetear el estado de actualización
             console.log(`Received ${response.data.length} news items`);
-            console.log("Respuesta del servidor:", response);
             this.data = response.data.map((noticia: any) => {
               return { ...noticia, comments: [] };
             });
 
-            // Fetch comments for each news item
             this.data.forEach((noticia, index) => {
               this.fetchCommentsForNews(noticia._id, index);
             });
           } else {
             this.error = "El servidor no retornó un array válido.";
             console.error("Respuesta no válida:", response);
+            this.isLoading = false;
+            this.isUpdating = false;
           }
         },
         error: (err: any) => {
           this.isLoading = false;
+          this.isUpdating = false;
           this.error = "Hubo un error al obtener las noticias.";
           console.error("Error en la solicitud:", err);
         },
       });
   }
 
-  // Método para actualizar las noticias según las fuentes seleccionadas
-  updateNews() {
+  // Método actualizado para manejar la actualización de noticias
+  async updateNews(): Promise<void> {
+    if (this.isUpdating) {
+      this.showUpdateAlert();
+      return;
+    }
+
+    this.isUpdating = true;
     this.isLoading = true;
+    
     const selectedSources = this.newsSources
       .filter(source => source.selected)
       .map(source => source.value);
 
     console.log('Updating news with selected sources:', selectedSources);
 
-    // If user is logged in, save preferences
-    if (this.currentUser?._id) {
-      console.log(`Saving news source preferences for user: ${this.currentUser.username}`);
-      const updateData = {
-        settings: {
-          sourceWebsitesToScrape: selectedSources
-        }
-      };
-
-      console.log('Sending update to server:', updateData);
-      this.httpClient.put(`${this.apiUrl}/users/${this.currentUser._id}`, updateData)
-        .subscribe({
-          next: (response) => {
-            console.log('User preferences saved successfully:', response);
-            // After saving preferences, fetch the news
-            this.fetchData(selectedSources);
-          },
-          error: (err) => {
-            console.error('Error updating user settings:', err);
-            console.log('Proceeding to fetch news despite settings save failure');
-            // Still try to fetch news even if saving preferences failed
-            this.fetchData(selectedSources);
+    try {
+      if (this.currentUser?._id) {
+        console.log(`Saving news source preferences for user: ${this.currentUser.username}`);
+        const updateData = {
+          settings: {
+            sourceWebsitesToScrape: selectedSources
           }
-        });
-    } else {
-      console.log('No user logged in, fetching news without saving preferences');
-      // No user logged in, just fetch the news
-      this.fetchData(selectedSources);
+        };
+
+        await this.httpClient.put(`${this.apiUrl}/users/${this.currentUser._id}`, updateData)
+          .toPromise()
+          .then((response) => {
+            console.log('User preferences saved successfully:', response);
+          })
+          .catch((err) => {
+            console.error('Error updating user settings:', err);
+          });
+      }
+
+      await this.fetchDataAsync(selectedSources);
+    } catch (error) {
+      console.error('Error updating news:', error);
+      this.isLoading = false;
+      this.isUpdating = false;
     }
   }
 
-  // Fetch news with selected sources
-/*   fetchNewsWithSources(selectedSources: string[]) {
-    if (selectedSources.length > 0) {
-      const sourcesParam = selectedSources.join(',');
-      console.log(`Fetching news with sources: ${sourcesParam}`);
+  private async fetchDataAsync(selectedSources: string[]): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.fetchData(selectedSources);
+      // Asumimos que fetchData manejará el estado de isLoading/isUpdating
+      resolve();
+    });
+  }
 
-      this.httpClient.get(`${this.apiUrl}/news?sources=${sourcesParam}`)
-        .subscribe({
-          next: (response: any) => {
-            if (Array.isArray(response.data)) {
-              this.isLoading = false;
-              console.log(`Received ${response.data.length} filtered news items`);
-              this.data = response.data.map((noticia: any) => {
-                return { ...noticia, comments: [] };
-              });
+  private showUpdateAlert(): void {
+    alert('Estamos actualizando las noticias para ti. Por favor, espera un momento...');
+  }
 
-              console.log('Fetching comments for filtered news items');
-              // Fetch comments for each news item
-              this.data.forEach((noticia, index) => {
-                this.fetchCommentsForNews(noticia._id, index);
-              });
-            } else {
-              this.error = "El servidor no retornó un array válido.";
-              console.error("Respuesta no válida:", response);
-              this.isLoading = false;
-            }
-          },
-          error: (err: any) => {
-            this.isLoading = false;
-            this.error = "Hubo un error al obtener las noticias.";
-            console.error("Error en la solicitud:", err);
-          },
-        });
-    } else {
-      console.log('No sources selected, clearing news data');
-      this.data = [];
-      this.isLoading = false;
-    }
-  } */
-
-  // Método para mostrar/ocultar el input de comentario
   toggleCommentInput(index: number): void {
     if (this.showCommentInput === index) {
       this.showCommentInput = null;
     } else {
       this.showCommentInput = index;
     }
-    this.newComment = ''; // Limpiar el input al cambiar de noticia
+    this.newComment = '';
   }
 
-  // Fetch comments for a specific news item
   fetchCommentsForNews(newsId: string, index: number): void {
     this.httpClient.get<{ message: string, data: Comment[] }>(`${this.apiUrl}/comments/news/${newsId}`)
       .subscribe({
@@ -241,7 +207,6 @@ export class NewsComponent implements OnInit {
       });
   }
 
-  // Método para agregar un comentario
   addComment(index: number): void {
     if (this.newComment.trim()) {
       const newsId = this.data[index]._id;
@@ -255,36 +220,27 @@ export class NewsComponent implements OnInit {
       this.httpClient.post<{ message: string, data: Comment }>(`${this.apiUrl}/comments`, commentData)
         .subscribe({
           next: (response) => {
-            // Add the new comment to the news item's comments array
             this.data[index].comments.push(response.data);
-            this.newComment = ''; // Limpiar el input después de agregar el comentario
-            this.showCommentInput = null; // Ocultar el input después de agregar el comentario
+            this.newComment = '';
+            this.showCommentInput = null;
           },
           error: (err) => {
             console.error('Error adding comment:', err);
-            // You could add error handling here, like showing an error message to the user
           }
         });
-    } else {
-      console.log('Comment submission canceled: empty comment');
     }
   }
 
-  // Método para eliminar un comentario
   deleteComment(newsIndex: number, commentId: string): void {
     this.httpClient.delete<{ message: string, data: Comment }>(`${this.apiUrl}/comments/${commentId}`)
       .subscribe({
         next: (response) => {
-          // Remove the comment from the array
-          const previousCount = this.data[newsIndex].comments.length;
           this.data[newsIndex].comments = this.data[newsIndex].comments.filter(
             (comment: Comment) => comment._id !== commentId
           );
         },
         error: (err) => {
           console.error('Error deleting comment:', err);
-          console.error('Server response:', err.error);
-          // Could add error handling here, like showing an error message
         }
       });
   }
